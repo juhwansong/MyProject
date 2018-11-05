@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="commonMapper">
+
+	<!-- ============================ SELECT ============================ -->
+	<!-- 자동완성 데이터 : 채널 -->
+	<select id="selectChannelTitleList" resultType="string">
+		SELECT TITLE FROM T_CHANNEL 
+		WHERE ACTIVE = 'Y'
+		ORDER BY WRITE_DATE DESC
+	</select>
+	<!-- 자동완성 데이터 : 자유게시판 -->
+	<select id="selectFreeBoardTitleList" resultType="string">
+		SELECT TITLE FROM T_BOARD 
+		WHERE (ACTIVE = 'Y' AND TYPE = 'FREE')
+		ORDER BY WRITE_DATE DESC
+	</select>
+	<!-- 자동완성 데이터 : 봉사 -->
+	<select id="selectVolunteerApplyTitleList" resultType="string">
+		SELECT TITLE FROM T_VOLUNTEER_APPLY_BOARD 
+		<!-- WHERE APPLY_STATE = '모집중' -->
+		ORDER BY WRITE_DATE DESC
+	</select>
+	<!-- 자동완성 데이터 : 봉사후기 -->
+	<select id="selectVolunteerEpilogueTitleList" resultType="string">
+		SELECT TITLE FROM T_VOLUNTEER_EPILOGUE_BOARD 
+		WHERE ACTIVE = 'Y'
+		ORDER BY WRITE_DATE DESC
+	</select>
+	
+	<!-- 통합검색 : 채널 -->
+	<select id="selectChannel" parameterType="String" resultType="ChannelDto">
+		SELECT * FROM (
+			SELECT ROWNUM AS RNUM, NO, TITLE, WRITE_DATE, CONTENT, CONTENT_TAG, THUMBNAIL, READ_COUNT, ACTIVE, ANIMAL_ID, ID
+			FROM (
+				SELECT * FROM T_CHANNEL
+				WHERE (ACTIVE = 'Y')
+				AND (
+						TITLE LIKE '%' || #{keyword} || '%' ESCAPE '@'
+				)
+				ORDER BY WRITE_DATE DESC
+			)
+		)
+		WHERE RNUM &lt;= 5
+	</select>
+	<!-- 통합검색 : 자유게시판 -->
+	<select id="selectFreeBoard" parameterType="String" resultType="FreeBoardDto">
+		SELECT * FROM (
+			SELECT ROWNUM AS RNUM, NO, ID, WRITE_DATE, CATEGORY, TITLE, CONTENT, CONTENT_TAG, READ_COUNT, GROUP_NO, PARENT_NO, GROUP_ORDER, BOARD_LEVEL, TYPE, ACTIVE
+			FROM (
+				SELECT * FROM T_BOARD
+				WHERE (ACTIVE = 'Y' AND TYPE = 'FREE')
+				AND (
+						TITLE LIKE '%' || #{keyword} || '%' ESCAPE '@'
+				)
+				ORDER BY WRITE_DATE DESC
+			)
+		)
+		WHERE RNUM &lt;= 5
+	</select>
+	<!-- 통합검색 : 봉사 -->
+	<select id="selectVolunteerApply" parameterType="String" resultType="VolunteerApplyDto">
+		SELECT * FROM (
+			SELECT ROWNUM AS RNUM, VOLUNTEER_DATE, LIMIT_DATE, VOLUNTEER_AREA, ID, WRITE_DATE, TITLE, CONTENT_TAG, THUMBNAIL, APPLY_MAX_COUNT, APPLY_STATE, CONTENT
+			FROM (
+				SELECT * FROM T_VOLUNTEER_APPLY_BOARD
+				<!-- WHERE (APPLY_STATE = '모집중') -->
+				WHERE (
+						TITLE LIKE '%' || #{keyword} || '%' ESCAPE '@'
+				)
+				ORDER BY WRITE_DATE DESC
+			)
+		)
+		WHERE RNUM &lt;= 5
+	</select>
+	<!-- 통합검색 : 봉사후기 -->
+	<select id="selectVolunteerEpilogue" parameterType="String" resultType="VolunteerEpilogueDto">
+		SELECT * FROM (
+			SELECT ROWNUM AS RNUM, NO, VOLUNTEER_DATE, ID, WRITE_DATE, TITLE, CONTENT, CONTENT_TAG, READ_COUNT, THUMBNAIL, ACTIVE
+			FROM (
+				SELECT * FROM T_VOLUNTEER_EPILOGUE_BOARD
+				WHERE (ACTIVE = 'Y')
+				AND (
+						TITLE LIKE '%' || #{keyword} || '%' ESCAPE '@'
+				)
+				ORDER BY WRITE_DATE DESC
+			)
+		)
+		WHERE RNUM &lt;= 5
+	</select>
+
+	<!-- 관리자 카운트 : 회원 -->
+	<select id="selectMemberCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM T_MEMBER) AS "total"
+			, (SELECT COUNT(*) FROM T_MEMBER WHERE ID_TYPE = 'NORMAL') 	AS "normal"
+			, (SELECT COUNT(*) FROM T_MEMBER WHERE ID_TYPE = 'GOOGLE') 	AS "google"
+		FROM DUAL
+	</select>
+	<!-- 관리자 카운트 : 상품 -->
+	<select id="selectProductCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM T_PRODUCT) AS "total"
+			, (SELECT COUNT(*) FROM T_PRODUCT WHERE CATEGORY LIKE '%사료%') AS "feed"
+			, (SELECT COUNT(*) FROM T_PRODUCT WHERE CATEGORY LIKE '%간식%') AS "snack"
+			, (SELECT COUNT(*) FROM T_PRODUCT WHERE CATEGORY LIKE '%용품%') AS "goods"
+		FROM DUAL
+	</select>
+	<!-- 관리자 카운트 : 채널 -->
+	<select id="selectChannelCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM T_CHANNEL) AS "total"
+			, (SELECT COUNT(*) FROM T_CHANNEL WHERE ANIMAL_ID = 'D25') AS "d25"
+			, (SELECT COUNT(*) FROM T_CHANNEL WHERE ANIMAL_ID = 'D26') AS "d26"
+			, (SELECT COUNT(*) FROM T_CHANNEL WHERE ANIMAL_ID = 'D27') AS "d27"
+			, (SELECT COUNT(*) FROM T_CHANNEL WHERE ANIMAL_ID = 'D28') AS "d28"
+		FROM DUAL
+	</select>
+	<!-- 관리자 카운트 : 스트리밍 -->
+	<select id="selectStreamingCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM T_STREAMING) AS "total"
+		FROM DUAL
+	</select>
+	<!-- 관리자 카운트 : 연구소 -->
+	<select id="selectLabCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM T_LAB) AS "total"
+		FROM DUAL
+	</select>
+	<!-- 관리자 카운트 : 공지사항 -->
+	<select id="selectNoticeCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM T_NOTICE) AS "total"
+		FROM DUAL
+	</select>
+	<!-- 관리자 카운트 : 자원봉사 -->
+	<select id="selectVolunteerApplyCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM T_VOLUNTEER_APPLY_BOARD) AS "total"
+			, (SELECT COUNT(*) FROM T_VOLUNTEER_APPLY_BOARD WHERE APPLY_STATE = '모집중') AS "enable"
+			, (SELECT COUNT(*) FROM T_VOLUNTEER_APPLY_BOARD WHERE APPLY_STATE = '모집마감') AS "disable"
+		FROM DUAL
+	</select>
+	<!-- 관리자 카운트 : 봉사후기 -->
+	<select id="selectVolunteerEpilogueCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM T_VOLUNTEER_EPILOGUE_BOARD) AS "total"
+		FROM DUAL
+	</select>
+	<!-- 관리자 카운트 : 입양신청 -->
+	<select id="selectAdoptionApplyCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM T_ADOPTION_APPLY) AS "total"
+			, (SELECT COUNT(*) FROM T_ADOPTION_APPLY WHERE STATE = '신청중') AS "request"
+			, (SELECT COUNT(*) FROM T_ADOPTION_APPLY WHERE STATE = '처리') AS "ing"
+			, (SELECT COUNT(*) FROM T_ADOPTION_APPLY WHERE STATE = '완료') AS "end"
+		FROM DUAL
+	</select>
+	<!-- 관리자 카운트 : 입양후기 -->
+	<select id="selectAdoptionReviewCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM T_ADOPTION_REVIEW) AS "total"
+		FROM DUAL
+	</select>
+	<!-- 관리자 카운트 : 자유게시판 -->
+	<select id="selectFreeBoardCount" resultType="HashMap">
+		SELECT 
+			  (SELECT COUNT(*) FROM V_FREEBOARD) AS "total"
+		FROM DUAL
+	</select>
+
+	<!-- 관리자 그래프 -->
+	<select id="selectVolunteerApplyGraph" resultType="HashMap">
+		SELECT 
+			  COUNT(*) AS "count"
+			, TO_CHAR(APPLY_DATE, 'YYYY/MM/DD') AS "apply_date"
+		FROM T_VOLUNTEER_APPLY_APPLIER
+		GROUP BY TO_CHAR(APPLY_DATE, 'YYYY/MM/DD')
+		ORDER BY 2
+	</select>
+
+</mapper>

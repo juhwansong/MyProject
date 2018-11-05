@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="freeboardMapper">
+
+<!-- 
+	resultMap :  쿼리의 컬럼명과 Dto의 변수명이 같으면 안해도 됨.
+	쿼리의 컬럼명이 다를 경우 별칭을 이용해 Dto의 변수명과 같게 해도 됨.
+-->
+
+	<!-- 리스트 -->
+	<select id="selectListFreeBoard" parameterType="HashMap" resultType="FreeBoardDto">
+		SELECT * FROM ( SELECT ROWNUM RNUM, NO, CATEGORY, TITLE, NICKNAME, WRITE_DATE, READ_COUNT, BOARD_LEVEL 
+                          				FROM (SELECT * FROM V_FREEBOARD ORDER BY GROUP_NO DESC, GROUP_ORDER) )
+		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+	</select>
+
+	<!-- 총 게시글 개수 -->
+	<select id="selectTotalCountFreeBoard" resultType="_int">
+		SELECT COUNT(*) FROM V_FREEBOARD
+	</select>
+	
+	<!-- 상세페이지 -->
+	<select id="selectDetailFreeBoard" parameterType="_int" resultType="FreeBoardDto">
+		SELECT * FROM V_FREEBOARD
+		WHERE NO = #{no}
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="updateReadCount" parameterType="_int" flushCache="true">
+		UPDATE T_BOARD
+		SET READ_COUNT = READ_COUNT + 1
+		WHERE NO = #{no}
+		AND TYPE = 'FREE'
+	</update>
+	
+	<!-- 글삭제 -->
+	<update id="updateNonActiveFreeBoard" parameterType="_int" flushCache="true">
+		UPDATE T_BOARD SET ACTIVE = 'N' WHERE NO = #{no} AND TYPE = 'FREE'
+	</update>
+	
+	<!-- 글쓰기 -->
+	<insert id="insertFreeBoard" parameterType="FreeBoardDto" flushCache="true">
+		INSERT INTO T_BOARD VALUES (T_FREEBOARD_SEQ.NEXTVAL, #{id}, SYSDATE, #{category}, #{title}, #{content}, #{content_tag}, DEFAULT, T_FREEBOARD_SEQ.NEXTVAL, T_FREEBOARD_SEQ.NEXTVAL, 1, DEFAULT, 'FREE', 'Y') 
+	</insert>
+
+	<!-- 답글쓰기 -->
+	<update id="updateBeforeInsertFreeBoard" parameterType="FreeBoardDto" flushCache="true" >
+		UPDATE T_BOARD SET GROUP_ORDER = GROUP_ORDER + 1 WHERE GROUP_NO = #{group_no} AND GROUP_ORDER > #{group_order} AND TYPE= 'FREE'
+	</update>
+	
+	<insert id="insertWriteReplyFreeBoard" parameterType="FreeBoardDto" flushCache="true">
+		INSERT INTO T_BOARD VALUES (T_FREEBOARD_SEQ.NEXTVAL, #{id}, SYSDATE, #{category}, #{title}, #{content}, #{content_tag}, 0, #{group_no}, #{parent_no}, #{group_order} + 1, #{board_level} + 1, 'FREE', 'Y')
+	</insert>
+	 
+	<!-- 글 수정 -->
+	<update id="updateFreeBoard" parameterType="FreeBoardDto" flushCache="true">
+		UPDATE T_BOARD SET CATEGORY = #{category}, TITLE = #{title}, CONTENT = #{content}, CONTENT_TAG = #{content_tag} WHERE NO = #{no} AND TYPE = 'FREE'
+	</update>
+
+	<!-- 댓글 읽기 -->
+	<select id="selectListFreeBoardReply" parameterType="HashMap" resultType="FreeBoardReplyDto">
+		SELECT * FROM ( SELECT ROWNUM RNUM, NO, ID, WRITE_DATE, BOARD_NO, REPLY_CONTENT, GROUP_NO, PARENT_NO, REPLY_LEVEL, TYPE, NICKNAME 
+                          FROM (SELECT * FROM V_FREEBOARD_REPLY WHERE BOARD_NO=#{board_no} ORDER BY NO) )
+		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<!-- 총  댓글 개수 -->
+	<select id="selectTotalCountFreeBoardReply" resultType="_int">
+		SELECT COUNT(*) FROM V_FREEBOARD_REPLY WHERE BOARD_NO = #{board_no}
+	</select>	
+	
+	<!-- 댓글 수정 -->
+	<update id="updateFreeBoardReply" parameterType="FreeBoardReplyDto" flushCache="true">
+		UPDATE T_FREEBOARD_REPLY SET REPLY_CONTENT = #{reply_content} WHERE NO = #{no}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteFreeBoardReply" parameterType="_int" flushCache="true">
+		DELETE T_FREEBOARD_REPLY WHERE NO = #{no}
+	</delete>
+	
+	<!-- 댓글 쓰기 -->
+	<insert id="insertFreeBoardReply" parameterType="FreeBoardReplyDto" flushCache="true">
+		INSERT INTO T_FREEBOARD_REPLY VALUES (T_FREEBOARD_REPLY_SEQ.NEXTVAL, #{board_no}, 'FREE', #{id}, SYSDATE, #{reply_content}, T_FREEBOARD_REPLY_SEQ.NEXTVAL, T_FREEBOARD_REPLY_SEQ.NEXTVAL, 0)
+	</insert>
+
+
+</mapper>

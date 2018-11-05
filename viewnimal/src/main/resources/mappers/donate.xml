@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="donateMapper">
+
+	<!-- ============================ SELECT ============================ -->
+	<!-- 회원 후원내역 카운트 -->
+	<select id="selectListCount" parameterType="HashMap" resultType="int">
+		SELECT count(*) FROM T_DONATE
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="supporter_id != null">SUPPORTER_ID = #{supporter_id}</if>
+			<if test="category != null">AND ${category} LIKE '%' || #{keyword} || '%'</if>
+		</trim>
+	</select>
+
+	<!-- 회원 후원내역 조회 -->
+	<select id="selectList" parameterType="HashMap" resultType="DonateDto">
+		SELECT * FROM (
+			SELECT ROWNUM AS RNUM, NO, WRITER, ACCOUNT_NO, ACCOUNT_HOST, BANK, DONATION, DONATE_DATE, SUPPORTER_ID
+			FROM (
+				SELECT * FROM T_DONATE
+				<trim prefix="WHERE" prefixOverrides="AND">
+					<if test="supporter_id != null">SUPPORTER_ID = #{supporter_id}</if>
+					<if test="category != null">AND ${category} LIKE '%' || #{keyword} || '%'</if>
+				</trim>
+				ORDER BY NO DESC, DONATE_DATE DESC
+			)
+		)
+		<if test="null != startRow and null != endRow">
+			WHERE #{startRow} &lt;= RNUM AND RNUM &lt;= #{endRow}
+		</if>
+	</select>
+
+	<!-- ============================ INSERT ============================ -->
+	<insert id="insertDonate" parameterType="DonateDto" flushCache="true">
+		INSERT INTO T_DONATE VALUES (
+			T_DONATE_SEQ.NEXTVAL, #{writer}, #{account_no}, #{account_host}, #{bank}, #{donation}, #{donate_date}, #{supporter_id}
+		)
+	</insert>
+
+	<!-- ============================ UPDATE ============================ -->
+	<!-- 후원내역 업데이트 -->
+	<update id="updateDonate" parameterType="DonateDto" flushCache="true">
+		UPDATE T_DONATE
+		<trim prefix="SET" prefixOverrides=",">
+			<if test="account_no != null">ACCOUNT_NO = #{account_no}</if>
+			<if test="account_host != null">, ACCOUNT_HOST = #{account_host}</if>
+			<if test="bank != null">, BANK = #{bank}</if>
+			<if test="donation != null">, DONATION = #{donation}</if>
+			<if test="donate_date != null">, DONATE_DATE = #{donate_date}</if>
+			<if test="supporter_id != null">, SUPPORTER_ID = #{supporter_id}</if>
+		</trim>
+		WHERE NO = #{no}
+	</update>
+
+	<!-- ============================ DELETE ============================ -->
+	<!-- 후원내역 삭제 -->
+	<delete id="deleteDonate" parameterType="DonateDto" flushCache="true">
+		DELETE T_DONATE
+		WHERE NO = #{no}
+	</delete>
+
+</mapper>

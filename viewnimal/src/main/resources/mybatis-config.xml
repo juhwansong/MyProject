@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration PUBLIC
+"-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- Oracle Mapper Null 처리 -->
+	<settings>
+		<setting name="cacheEnabled" value="false" />
+		<setting name="jdbcTypeForNull" value="NULL" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="com.kh.viewnimal.adoption.model.dto.AdoptionApplyDto" 						alias="AdoptionApplyDto" />
+		<typeAlias type="com.kh.viewnimal.adoption.model.dto.AdoptionPetDto" 						alias="AdoptionPetDto" />
+		<typeAlias type="com.kh.viewnimal.adoption.model.dto.AdoptionReviewDto" 					alias="AdoptionReviewDto" />
+		<typeAlias type="com.kh.viewnimal.adoption.model.dto.AdoptionReviewReplyDto" 				alias="AdoptionReviewReplyDto" />
+		<typeAlias type="com.kh.viewnimal.adoption.model.dto.AdoptionPetReviewDto"					alias="AdoptionPetReviewDto"/>
+		<typeAlias type="com.kh.viewnimal.adoption.model.dto.AdoptionAdminDto"						alias="AdoptionAdminDto"/>
+		<typeAlias type="com.kh.viewnimal.basket.model.dto.BasketDto" 								alias="BasketDto" />
+		<typeAlias type="com.kh.viewnimal.channel.model.dto.ChannelDto" 							alias="ChannelDto" />
+		<typeAlias type="com.kh.viewnimal.channel.model.dto.ChannelReplyDto" 						alias="ChannelReplyDto" />
+		<typeAlias type="com.kh.viewnimal.donate.model.dto.DonateDto" 								alias="DonateDto" />
+		<typeAlias type="com.kh.viewnimal.freeboard.model.dto.FreeBoardDto" 						alias="FreeBoardDto" />
+		<typeAlias type="com.kh.viewnimal.freeboard.model.dto.FreeBoardReplyDto" 					alias="FreeBoardReplyDto" />
+		<typeAlias type="com.kh.viewnimal.infoboard.model.dto.InfoBoardDto" 						alias="InfoBoardDto" />
+		<typeAlias type="com.kh.viewnimal.infoboard.model.dto.InfoBoardReplyDto" 					alias="InfoBoardReplyDto" />
+		<typeAlias type="com.kh.viewnimal.lab.model.dto.LabDto" 									alias="LabDto" />
+		<typeAlias type="com.kh.viewnimal.member.model.dto.MemberDto" 								alias="MemberDto" />
+		<typeAlias type="com.kh.viewnimal.notice.model.dto.NoticeDto" 								alias="NoticeDto" />
+		<typeAlias type="com.kh.viewnimal.order.model.dto.OrderDto" 								alias="OrderDto" />
+		<typeAlias type="com.kh.viewnimal.product.model.dto.ProductDto" 							alias="ProductDto" />
+		<typeAlias type="com.kh.viewnimal.qna.model.dto.QnaDto" 									alias="QnaDto" />
+		<typeAlias type="com.kh.viewnimal.streaming.model.dto.StreamingDto" 						alias="StreamingDto" />
+		<typeAlias type="com.kh.viewnimal.streaming.model.dto.StreamingReplyDto" 					alias="StreamingReplyDto" />
+		<typeAlias type="com.kh.viewnimal.volunteerapply.model.dto.VolunteerApplierDto" 			alias="VolunteerApplierDto" />
+		<typeAlias type="com.kh.viewnimal.volunteerapply.model.dto.VolunteerApplyDto" 				alias="VolunteerApplyDto" />
+		<typeAlias type="com.kh.viewnimal.volunteerepilogue.model.dto.VolunteerEpilogueDto" 		alias="VolunteerEpilogueDto" />
+		<typeAlias type="com.kh.viewnimal.volunteerepilogue.model.dto.VolunteerEpilogueReplyDto" 	alias="VolunteerEpilogueReplyDto" />
+	</typeAliases>
+	
+	<!-- <mappers>
+		<mapper resource="mappers/adoption.xml" />
+		<mapper resource="mappers/basket.xml" />
+		<mapper resource="mappers/channel.xml" />
+		<mapper resource="mappers/donate.xml" />
+		<mapper resource="mappers/freeboard.xml" />
+		<mapper resource="mappers/infoboard.xml" />
+		<mapper resource="mappers/lab.xml" />
+		<mapper resource="mappers/member.xml" />
+		<mapper resource="mappers/notice.xml" />
+		<mapper resource="mappers/order.xml" />
+		<mapper resource="mappers/product.xml" />
+		<mapper resource="mappers/qna.xml" />
+		<mapper resource="mappers/streaming.xml" />
+		<mapper resource="mappers/volunteerapply.xml" />
+		<mapper resource="mappers/volunteerepilogue.xml" />
+		<mapper resource="mappers/common.xml" />
+	</mappers> -->
+
+</configuration>

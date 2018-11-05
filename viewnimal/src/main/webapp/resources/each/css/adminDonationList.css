@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+.vm-adminDonationList .dataTables_filter { width: auto; }
+.vm-adminDonationList .table { width: 100% !important; }
+.vm-adminDonationList .table th,
+.vm-adminDonationList .table td { text-align: center; vertical-align: middle; }
+
+.vm-adminDonationList__submit-box { display: flex; justify-content: space-between; }
+.vm-adminDonationList__submit-box .btn { width: calc(33.333% - 20px); padding: 10px 0; font-weight: 600; }
+
+.vm-adminDonationList__insert-form { padding-bottom: 20px; border-bottom: 1px solid #E6E9ED; }
+#insertDonateBtn { width: 100%; padding: 10px 0; background-color: #2196F3; color: #fff; }
+#insertDonateBtn:hover { background-color: #0081e8; }
+
+.vm-adminDonationList__info-table { transition: opacity 350ms; opacity: 0; }
+html.on-ready .vm-adminDonationList__info-table { opacity: 1; }
+.vm-adminDonationList__info-table .table { margin-top: 14px !important; }
+.vm-adminDonationList__info-table thead td:last-child { white-space: nowrap; pointer-events: none; }
+.vm-adminDonationList__info-table tbody td:last-child { cursor: pointer; }
+
+.vm-adminDonationList__hide-text { overflow: hidden; width: 0; height: 0; }
+.vm-adminDonationList__original-value { color: #fff; line-height: 20px; font-weight: 600; }
+
+.vm-adminDonationList__insert-form .btn { margin: 0; }
+.vm-adminDonationList__insert-form .form-group { margin: 0; }
+
+.vm-adminDonationList__insert-form input[type="text"],
+.vm-adminDonationList__info-table input[type="text"] { width: 100%; text-align: center; }
+.vm-adminDonationList__insert-form,
+.vm-adminDonationList__info-table { margin-top: 20px; }

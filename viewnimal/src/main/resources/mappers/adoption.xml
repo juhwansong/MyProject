@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="adoptionMapper">	
+	<select id="getPetListCount" resultType="int">
+		SELECT COUNT(*) FROM T_ADOPTION_PET WHERE ACTIVE = 'Y'
+	</select>
+	<select id="getReviewListCount" resultType="int">
+		SELECT COUNT(*) FROM T_ADOPTION_REVIEW
+	</select>	
+	<select id="getReplyCount" resultType="int" parameterType="int">
+		SELECT COUNT(*) FROM T_ADOPTION_REVIEW_REPLY WHERE ORIGIN_NO = #{origin_no}
+	</select>
+	<select id="getAdminListCount" resultType="int">
+		SELECT COUNT(*) FROM T_ADOPTION_APPLY
+	</select>
+	<select id="selectPet" parameterType="String" resultType="AdoptionPetDto">
+		SELECT * FROM T_ADOPTION_PET WHERE PET_ID = #{pet_id}
+	</select>
+	<select id="petReview" parameterType="String" resultType="AdoptionPetDto">
+		SELECT * FROM T_ADOPTION_PET WHERE NAME = #{name}
+	</select>
+	<select id="selectReview" parameterType="String" resultType="AdoptionReviewDto">
+		SELECT NO, PET_ID, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD HH24:MI') WRITE_DATE, COUNT, ID, ADDRESS, IMAGE, ACTIVE, USERNAME 
+		FROM T_ADOPTION_REVIEW 
+		WHERE PET_ID = #{pet_id}
+	</select>
+	<select id="selectReviewReply" parameterType="int" resultType="AdoptionReviewReplyDto">
+		SELECT NO, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD HH24:MI AM') AS WRITE_DATE, CONTENT, WRITER, ORIGIN_NO 
+		FROM T_ADOPTION_REVIEW_REPLY
+		WHERE ORIGIN_NO = #{no}
+		ORDER BY NO DESC
+	</select>
+	<select id="selectAdoptionApply" parameterType="int" resultType="AdoptionApplyDto">
+		SELECT * FROM T_ADOPTION_APPLY WHERE NO = #{no}
+	</select>	
+	<select id="selectPetList" parameterType="hashMap" resultType="AdoptionPetDto">
+		SELECT * 
+		FROM (SELECT PET.*, FLOOR((ROWNUM -1) / #{limit} + 1) PAGE 
+			  FROM (SELECT * FROM T_ADOPTION_PET 
+			  WHERE ACTIVE = 'Y'
+			  ORDER BY IMAGE DESC) PET) 
+	    WHERE PAGE = #{currentPage}
+	</select>
+	<select id="selectReviewList" parameterType="hashMap" resultType="AdoptionPetReviewDto">
+		SELECT * 
+		FROM (SELECT V_ADOPTION_REVIEW.*, FLOOR((ROWNUM - 1) / #{limit} + 1) PAGE 
+			  FROM V_ADOPTION_REVIEW 
+			  ORDER BY NO DESC)
+		WHERE PAGE = #{currentPage}		
+	</select>
+	<select id="selectAdminList" parameterType="hashMap" resultType="AdoptionAdminDto">
+	    SELECT NO, ID, PET_ID, TO_CHAR(REQUEST_DATE, 'YYYY-MM-DD HH24:MI:SS') REQUEST_DATE, STATE, REVIEW, PHONE, USERNAME, NAME, PAGE 
+		FROM (SELECT V_ADOPTION_APPLY.*, FLOOR((ROWNUM - 1) / #{limit} + 1) PAGE
+			  FROM V_ADOPTION_APPLY)
+		WHERE PAGE = #{currentPage}
+	</select>
+	<select id="selectAdoptedPet" resultType="String">
+		SELECT DISTINCT PET_ID FROM T_ADOPTION_APPLY
+		WHERE STATE NOT IN '완료'
+		AND PET_ID IN ( SELECT PET_ID 
+		                FROM T_ADOPTION_APPLY
+		                WHERE STATE = '완료')
+	</select>
+	<select id="adminSearch" parameterType="hashMap" resultType="AdoptionAdminDto"> 
+		SELECT APPLY.NO, APPLY.ID, PET.NAME, TO_CHAR(APPLY.REQUEST_DATE, 'YYYY-MM-DD HH24:MI:SS') REQUEST_DATE, APPLY.STATE, APPLY.REVIEW, APPLY.PHONE, APPLY.USERNAME
+		FROM (SELECT * FROM T_ADOPTION_APPLY
+		      ORDER BY NO DESC, REQUEST_DATE DESC) APPLY, T_ADOPTION_PET PET 
+		WHERE APPLY.PET_ID = PET.PET_ID
+		<choose>
+			<when test="category.equals('ID')">
+				AND ID LIKE '%' || #{content} || '%'
+			</when>
+			<when test="category.equals('Name')">
+				AND USERNAME LIKE '%' || #{content} || '%'
+			</when>
+			<when test="category.equals('Pet')">
+				AND NAME LIKE '%' || #{content} || '%'
+			</when>
+			<otherwise>
+				AND STATE = #{content}
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<insert id="insertPet" parameterType="AdoptionPetDto" flushCache="true" statementType="PREPARED">
+		INSERT INTO T_ADOPTION_PET
+		VALUES(T_ADOPTION_PET_SEQ.NEXTVAL, #{name}, #{gender}, #{weight}, #{age}, #{neuter}, #{breed}, #{image}, #{content}, DEFAULT, #{bdetail} ,DEFAULT)
+	</insert>
+	<insert id="insertAdoption" parameterType="AdoptionApplyDto" flushCache="true" statementType="PREPARED">
+		INSERT INTO T_ADOPTION_APPLY
+		VALUES(T_ADOPTION_APPLY_SEQ.NEXTVAL, #{id}, #{pet_id}, DEFAULT, DEFAULT, DEFAULT, #{phone}, #{username})
+	</insert>	
+	<insert id="insertReview" parameterType="AdoptionReviewDto" flushCache="true" statementType="PREPARED">
+		INSERT INTO T_ADOPTION_REVIEW
+		VALUES(T_ADOPTION_REVIEW_SEQ.NEXTVAL, #{pet_id}, DEFAULT, DEFAULT, #{id}, #{address}, #{image}, #{content}, DEFAULT, #{username})
+	</insert>
+	<insert id="insertReply" parameterType="AdoptionReviewReplyDto" flushCache="true" statementType="PREPARED">
+		INSERT INTO T_ADOPTION_REVIEW_REPLY 
+		VALUES(T_ADOPTION_REVIEW_REPLY_SEQ.NEXTVAL, SYSDATE, #{content}, #{writer}, #{origin_no})
+	</insert>
+	
+	
+	<update id="updatePet" parameterType="AdoptionPetDto" flushCache="true" statementType="PREPARED">
+		UPDATE T_ADOPTION_PET 
+		SET NAME = #{name},
+			GENDER = #{gender},
+			WEIGHT = #{weight},
+			AGE = #{age},
+			NEUTER = #{neuter},
+			BREED = #{breed},
+			IMAGE = #{image},
+			BDETAIL = #{bdetail}
+		WHERE PET_ID = #{pet_id}
+	</update>
+	<update id="updateCount" parameterType="int" flushCache="true" statementType="PREPARED">
+		UPDATE T_ADOPTION_REVIEW 
+		SET COUNT = COUNT + 1 WHERE NO = #{no}
+	</update>
+	<update id="updateReply" parameterType="hashMap" flushCache="true" statementType="PREPARED">
+		UPDATE T_ADOPTION_REVIEW_REPLY
+		SET CONTENT = #{content},
+		WRITE_DATE = SYSDATE
+		WHERE NO = #{no}
+	</update>
+	<update id="updateState" parameterType="hashMap" flushCache="true" statementType="PREPARED">
+		UPDATE T_ADOPTION_APPLY
+		SET STATE = #{state}
+		WHERE NO = #{no}
+	</update>
+	<update id="updateActive" parameterType="hashMap" flushCache="true" statementType="PREPARED">
+		UPDATE T_ADOPTION_PET
+		SET ACTIVE = 'N'
+		WHERE PET_ID = #{pet_id}
+	</update>
+	<update id="updateReview">
+		UPDATE T_ADOPTION_APPLY
+		SET REVIEW = 'Y'
+		WHERE NO = #{no}
+	</update>
+	<update id="updateAdoptionReview" parameterType="AdoptionReviewDto" flushCache="true" statementType="PREPARED">
+		UPDATE T_ADOPTION_REVIEW 
+		SET USERNAME = #{username},
+            ADDRESS = #{address},
+        	IMAGE = #{image}
+        WHERE PET_ID = #{pet_id}
+	</update>
+	
+	
+	<delete id="deleteApply" parameterType="int" flushCache="true" statementType="PREPARED">
+		DELETE FROM T_ADOPTION_APPLY WHERE NO = #{no}
+	</delete>
+	<delete id="deleteReview" parameterType="int" flushCache="true" statementType="PREPARED">
+		DELETE FROM T_ADOPTION_REVIEW WHERE NO = #{no}
+	</delete>
+	<delete id="deleteReply" parameterType="int" flushCache="true" statementType="PREPARED">
+		DELETE FROM T_ADOPTION_REVIEW_REPLY
+		WHERE NO = #{no}
+	</delete>
+</mapper>

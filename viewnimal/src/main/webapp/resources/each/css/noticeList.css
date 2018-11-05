@@ -1,0 +1,45 @@
+@CHARSET "UTF-8";
+
+
+.vm-noticeList__dropdown-list {
+	min-width: 5.5rem;
+}
+
+.vm-noticeList__dropdown-category {
+	min-width: 8rem;
+}
+
+
+
+.vm-noticeList a {
+	text-decoration: none;
+	color: #172b4d;
+	background-color: transparent;
+	-webkit-text-decoration-skip: objects;
+}
+
+
+.vm-noticeList a:hover {
+	text-decoration: none;
+	color: #888;
+}
+
+.vm-noticeList table>thead > tr > th {
+	letter-spacing: -.08rem;
+	font-size: .9rem;
+}
+
+.vm-noticeList__table tbody > tr > td:not(.text-left) {
+	letter-spacing: -.08rem;
+	font-size: .95rem;
+}
+
+.vm-noticeList__select-list {
+	/*height:35px;*/
+	padding:0;
+	font-size:.8rem;
+}
+
+.vm-noticeList .vui-board__box--t { margin-bottom: 20px; }
+.vm-noticeList__search-form { width:100%; justify-content: space-between; }
+.vm-noticeList__search-input-box > *:not(:first-child) { margin-left: 15px; }

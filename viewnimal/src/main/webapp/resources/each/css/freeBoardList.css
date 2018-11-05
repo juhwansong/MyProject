@@ -1,0 +1,23 @@
+@CHARSET "UTF-8";
+
+.vm-freeBaordList { margin-top: 50px; }
+
+.vm-freeBoardList__page-color .page-link {
+	color: #fff;
+	border-color: #5e72e4;
+	background-color: #5e72e4;
+}
+
+.vm-freeBoardList__table-color > thead > tr { 
+	color: #fff;
+	border-color: #5e72e4;
+	background-color: #5e72e4;
+ }
+
+ .vm-freeBoardList a {
+	text-decoration: none;
+	color: #172b4d;
+	background-color: transparent;
+/* 	-webkit-text-decoration-skip: objects;
+font-size: .9rem; */
+}

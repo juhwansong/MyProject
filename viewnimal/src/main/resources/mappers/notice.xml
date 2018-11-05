@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="noticeMapper">
+
+	<!-- 공지사항 목록 -->
+	<select id="selectNoticeList" parameterType="hashMap" resultType="NoticeDto">
+		SELECT * FROM (SELECT ROWNUM RNUM, NO, TITLE, NICKNAME, READ_COUNT, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD') WRITE_DATE, ORIGINAL_FILE_NAME
+					   FROM (SELECT * FROM V_NOTICE ORDER BY NO DESC))
+				 WHERE RNUM &gt;= #{startrow} AND RNUM &lt;= #{endrow}
+	</select>
+	
+	
+	<!-- 공지사항 상세보기 -->
+	<select id="selectNotice" parameterType="_int" resultType="NoticeDto">
+		SELECT * FROM ( SELECT	NO, TITLE, CONTENT, NICKNAME, READ_COUNT, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD') WRITE_DATE, ORIGINAL_FILE_NAME, RENAME_FILE_NAME,
+		      					LEAD(NO, 1, 0) OVER (ORDER BY NO) NEXT_NO,
+							    LEAD(TITLE, 1) OVER (ORDER BY NO) NEXT_TITLE,
+							    LEAD(TO_CHAR(WRITE_DATE, 'YYYY-MM-DD'), 1) OVER (ORDER BY NO) NEXT_WRITE_DATE,						      
+							    LAG(NO, 1, 0) OVER (ORDER BY NO) PRE_NO,
+							    LAG(TITLE, 1) OVER (ORDER BY NO) PRE_TITLE,
+							    LAG(TO_CHAR(WRITE_DATE, 'YYYY-MM-DD'), 1) OVER (ORDER BY NO) PRE_WRITE_DATE
+						FROM V_NOTICE
+				) WHERE NO = #{no}
+	</select>
+	
+	
+	<!-- 공지사항 작성 -->
+	<insert id="insertNotice" parameterType="NoticeDto">
+		INSERT INTO T_NOTICE
+		VALUES (T_NOTICE_SEQ.NEXTVAL, #{title}, #{content}, #{id}, 0,
+				DEFAULT, #{original_file_name}, #{rename_file_name}, DEFAULT)
+	</insert>
+	
+	
+	<!-- 공지사항 수정 -->
+	<update id="updateNotice" parameterType="NoticeDto">
+		UPDATE T_NOTICE SET TITLE = #{title}, CONTENT = #{content},
+							ORIGINAL_FILE_NAME = #{original_file_name}, RENAME_FILE_NAME = #{rename_file_name}
+						WHERE NO = #{no}
+	</update>
+	
+	
+	<!-- 공지사항 삭제 -->
+	<update id="deleteNotice" parameterType="_int">
+		UPDATE T_NOTICE SET ACTIVE = 'N' WHERE NO = #{no}
+	</update>
+	
+	
+	<!-- 공지사항 조회수 증가 -->
+	<update id="updateAddReadCount" parameterType="_int">
+		UPDATE T_NOTICE SET READ_COUNT = READ_COUNT + 1 WHERE NO = #{no}
+	</update>
+	
+	
+	<!-- 공지사항 게시글 총 개수 -->
+	<select id="selectCountList" resultType="_int">
+		SELECT COUNT(*) FROM V_NOTICE
+	</select>
+
+
+	<!-- 공지사항 검색 게시물 목록 -->
+	<select id="selectSearchNotice" parameterType="hashMap" resultType="NoticeDto">
+		SELECT * FROM (SELECT ROWNUM RNUM, NO, TITLE, NICKNAME, READ_COUNT, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD') WRITE_DATE, ORIGINAL_FILE_NAME
+					   FROM ( SELECT * FROM V_NOTICE WHERE 
+		<choose>
+			<when test="category.equals('category')">
+				UPPER(TITLE) LIKE '%'||UPPER(#{keyword})||'%' OR UPPER(CONTENT) LIKE '%'||UPPER(#{keyword})||'%'
+			</when>
+			<otherwise>
+				UPPER(${category}) LIKE '%'||UPPER(#{keyword})||'%'
+			</otherwise>
+		</choose>
+		 ORDER BY NO DESC))
+		 WHERE RNUM &gt; = #{startrow} AND RNUM &lt; = #{endrow}
+	</select>
+
+
+	<!-- 공지사항 검색 게시물 총 개수 -->
+	<select id="selectCountSearch" parameterType="hashMap" resultType="_int">
+		SELECT COUNT(*) FROM V_NOTICE WHERE 
+		<choose>
+			<when test="category.equals('category')">
+				UPPER(TITLE) LIKE '%'||UPPER(#{keyword})||'%' OR UPPER(CONTENT) LIKE '%'||UPPER(#{keyword})||'%'
+			</when>
+			<otherwise>
+				UPPER(${category}) LIKE '%'||UPPER(#{keyword})||'%'
+			</otherwise>
+		</choose>
+	</select>
+	
+</mapper>

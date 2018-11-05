@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="orderMapper">
+
+	<resultMap type="OrderDto" id="resultOrder">
+		<result property="order_no" column="order_no" />
+		<result property="product_id" column="product_id" />
+		<result property="id" column="id" />
+		<result property="amount" column="amount" />
+		<result property="order_date" column="order_date" />
+		<result property="order_state" column="order_state" />
+		<result property="ship_state" column="ship_state" />
+		<result property="address" column="address" />
+	</resultMap>
+
+	<insert id="orderInsertComplete" parameterType="list">
+		<foreach collection="list" item="item" open="insert all" separator=" " close="select * from dual">
+		into t_order values 
+		('OR' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(T_ORDER_SEQ.NEXTVAL, 4, '0'), #{item.product_id}, #{item.id}, #{item.amount}, sysdate, default, default, #{item.address})
+		</foreach>
+	</insert>
+</mapper>

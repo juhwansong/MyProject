@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+.vm-donateList .vui-my-submenu { margin-top: 20px; }
+.vm-donateList__article {
+	margin-top: 40px;
+}
+
+.vm-donateList .vui-board tr > * {
+	text-align: center;
+	cursor: initial;
+}
+
+.vm-donateList .vui-board__box--t {
+	margin-bottom: 20px;
+}
+
+.vm-donateList__board__no-data.vm-donateList__board__no-data:hover {
+	background-color: #fff;
+}
+.vm-donateList__board__no-data__text {
+	padding: 100px 0;
+	font-size: 30px;
+}

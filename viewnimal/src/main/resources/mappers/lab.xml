@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="labMapper">
+
+<resultMap type="LabDto" id="LabList">
+		<result column="no" property="no"/>
+		<result column="title" property="title"/>
+		<result column="write_date" property="write_date"/>
+		<result column="content" property="content"/>
+		<result column="content_tag" property="content_tag"/>
+		<result column="thumbnail" property="thumbnail"/>
+		<result column="lab_tag" property="lab_tag"/>
+		<result column="id" property="id"/>
+		<result column="nickname" property="nickname"/>
+	</resultMap>
+	
+	<resultMap type="LabDto" id="Lab">
+		<id column="no" property="no"/>
+		<result column="title" property="title"/>
+		<result column="write_date" property="write_date"/>
+		<result column="content" property="content"/>
+		<result column="content_tag" property="content_tag"/>
+		<result column="thumbnail" property="thumbnail"/>
+		<result column="lab_tag" property="lab_tag"/>
+		<result column="id" property="id"/>
+		<result column="nickname" property="nickname"/>
+	</resultMap>
+	
+	<select id="selectLabList" parameterType="hashMap" resultType="LabDto" resultMap="LabList">
+		SELECT * FROM (SELECT ROWNUM RNUM, NO, TITLE, CONTENT, THUMBNAIL FROM (SELECT * FROM T_LAB ORDER BY NO DESC))
+				 WHERE RNUM &gt;= #{startrow} AND RNUM &lt;= #{endrow}
+	</select>
+	
+	<select id="selectLab" parameterType="_int" resultMap="Lab">
+		SELECT * FROM T_LAB WHERE NO = #{no}
+	</select>
+	
+	<select id="selectCountLab" parameterType="_int" resultType="_int">
+		SELECT COUNT(*) FROM T_LAB
+	</select>
+	
+	<insert id="insertLab" parameterType="LabDto" flushCache="true">
+		INSERT INTO T_LAB VALUES(T_LAB_SEQ.NEXTVAL, #{title}, SYSDATE, #{content}, #{content_tag}, #{thumbnail}, #{lab_tag}, #{id})
+	</insert>
+	
+	<update id="updateLab" parameterType="LabDto" flushCache="true">
+		UPDATE T_LAB SET TITLE = #{title}, CONTENT = #{content}, CONTENT_TAG = #{content_tag}, THUMBNAIL = #{thumbnail} WHERE NO = #{no}
+	</update>
+	
+	<delete id="deleteLab" parameterType="_int" flushCache="true">
+		DELETE T_LAB WHERE NO = #{no}
+	</delete>
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

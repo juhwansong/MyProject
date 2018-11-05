@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+.vm-myProfile .vui-my-submenu { margin-top: 20px; }
+.vm-myProfile__article {
+	display: flex; flex-direction: row; align-content: flex-start;
+	margin-top: 40px;
+}
+.vm-myProfile__form {
+	flex-grow: 1;
+	overflow: hidden;
+	padding: 40px 60px;
+	border-radius: 10px;
+	background-color: #F4F5F7;
+	border: 1px solid #ddd;
+}
+.vm-myProfile__form > *:not(:first-child) { margin-top: 40px; }
+.vm-myProfile__form__input__item:not(:first-child) { margin-top: 20px; }
+.vm-myProfile__form__input__case:not(:first-child) { margin-top: 20px; }
+.vm-myProfile__form__input__item--off .input-group-text { background-color: #E9ECEF; }
+.vm-myProfile__form__input__guide { position: relative; padding-left: 20px; color: #aaa; font-size: 14px; line-height: 24px; }
+.vm-myProfile__form__input__guide::before {
+	content: '';
+	display: block;
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background-color: red;
+}
+.vm-myProfile__form__input__message {
+	opacity: 0; color: #ff518c; font-size: 0; font-weight: 600;
+	transition: opacity 350ms;
+}
+.vm-myProfile__form__input__message.on { opacity: 1; margin-top: 5px; padding: 0 10px; font-size: 12px; }
+.vm-myProfile__form__check {
+	display: flex; justify-content: flex-end; align-items: center;
+	margin-bottom: 10px;
+}
+.vm-myProfile__form__check__text { font-size: 14px; }
+.vm-myProfile__form__check .custom-toggle { margin: 0; margin-left: 10px; }
+
+.vm-myProfile__poster { width: 550px; margin-left: 60px; }
+.vm-myProfile__poster img {
+	width: 100%;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	vertical-align: top;
+	filter: blur(10px);
+	animation: 250ms linear 0s 1 normal forwards running;
+}
+html.on-ready .vm-myProfile__poster img {
+	animation-name: autoBlur;
+}
+
+@keyframes autoBlur {
+	from 	{ filter: blur(10px); }
+	to 		{ filter: blur(0); }
+}

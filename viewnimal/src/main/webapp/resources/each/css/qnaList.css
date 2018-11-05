@@ -1,0 +1,75 @@
+@CHARSET "UTF-8";
+.vm-qnaList-top .vui-my-submenu { margin-top: 20px; }
+.vm-qnaList__article {
+	margin-top: 40px;
+}
+
+.vm-qnaList table>thead > tr > th {
+	letter-spacing: -.05rem;
+	font-size: .9rem;
+}
+
+.vm-qnaList__table tbody > tr > td:not(.text-left) {
+	letter-spacing: -0.08rem;
+	font-size: .85rem;
+	font-width: bold;
+}
+
+
+.vm-qnaList__div-outline{
+	min-height: 7rem;
+	padding: 0rem 5rem 0rem 5rem;
+}
+
+.vm-qnaList__div-inline {
+	padding: .5rem;
+	word-break: break-all;
+}
+
+.vm-qnaList__div-inner {
+	display: inline-block;
+	width: 100%;
+}
+
+.vm-qnaList__div-inner-magin {
+	display: inline-block;
+	width: 96%;
+	margin-left: 2.5rem;
+}
+
+
+.vm-qnaList__span-bold {
+	font-weight: bold;
+}
+
+.vm-qnaList__span-small {
+	font-size: .8rem;
+}
+
+.vm-qnaList__span-content {
+	letter-spacing: -.05rem;
+}
+
+.vm-qnaList__hr-margin {
+	margin: .5rem 2rem .5rem 2rem;
+}
+
+
+.vm-qnaList__content-section {
+	display:none;
+}
+
+.vm-qnaList__textarea {
+	resize: vertical;
+}
+
+.vm-qnaList__form { 
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+	padding-right: 15px;
+}
+.vm-qnaList .vui-board__box--t { margin-bottom: 20px; }
+.vm-qnaList__form > *:not(:first-child) {
+	margin-left: 15px;
+}

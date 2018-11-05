@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="volunteerapplyMapper">
+	
+	<!-- 프로시저 리턴 값을 담기위한 resultMap -->
+	<resultMap type="hashmap" id="insertVolunteerApplyResultMap"/>
+	<!-- DB에 저장된 프로시저 호출 -->
+	<select id="insertApplyVolunteer" statementType="CALLABLE" parameterType="hashmap">
+		{ CALL INSERT_VOLUNTEER_APPLIER_PROC
+		   (
+		     #{volunteerDate, mode=IN, jdbcType=VARCHAR, javaType=string},
+		     #{id, mode=IN, jdbcType=VARCHAR, javaType=string},
+		     #{returnResult, mode=OUT, jdbcType=NUMERIC, javaType=java.lang.Integer, resultMap=insertVolunteerApplyResultMap}
+		   )
+		}
+	</select>
+	
+	<!-- 자원봉사 신청여부 상태값 얻기 -->
+	<select id="selectCheckVolunteerApply" parameterType="HashMap" resultType="_int">
+		SELECT COUNT(ID) 
+		FROM T_VOLUNTEER_APPLY_APPLIER
+		WHERE ID = #{id} AND VOLUNTEER_DATE = #{volunteer_date}
+	</select>
+	
+	<insert id="insertVolunteerApply" parameterType="VolunteerApplyDto">
+		INSERT INTO T_VOLUNTEER_APPLY_BOARD (VOLUNTEER_DATE, LIMIT_DATE, VOLUNTEER_AREA, ID, WRITE_DATE, TITLE, CONTENT_TAG, THUMBNAIL, APPLY_MAX_COUNT, APPLY_STATE, CONTENT) VALUES(#{volunteer_date}, #{limit_date}, #{volunteer_area}, #{id}, SYSDATE, #{title}, #{content_tag}, #{thumbnail}, #{apply_max_count}, '모집중', #{content})
+	</insert>
+	
+	<update id="updateVolunteerApply" flushCache="true" parameterType="VolunteerApplyDto">
+		UPDATE T_VOLUNTEER_APPLY_BOARD SET LIMIT_DATE = #{limit_date}, VOLUNTEER_AREA = #{volunteer_area}, ID=#{id}, WRITE_DATE = SYSDATE, 
+			   TITLE= #{title}, CONTENT_TAG = #{content_tag}, APPLY_MAX_COUNT = #{apply_max_count}, CONTENT = #{content}	
+			<trim prefix=",">
+				<choose>
+					<when test="thumbnail == null">
+						THUMBNAIL = DEFAULT
+					</when>
+					<otherwise>
+						THUMBNAIL = #{thumbnail}
+					</otherwise>
+				</choose>
+			</trim>
+			 WHERE VOLUNTEER_DATE = #{volunteer_date}
+	</update>
+	
+	<select id="selectSearchVolunteerApplyList" parameterType="string" resultType="VolunteerApplyDto">	
+		SELECT PARENT_TABLE.VOLUNTEER_DATE, LIMIT_DATE, VOLUNTEER_AREA, ID, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD HH24"시" MI"분"') AS WRITE_DATE_FORMAT, TITLE, CONTENT_TAG, THUMBNAIL, APPLY_MAX_COUNT, APPLY_STATE, APPLY_COUNT
+    	FROM T_VOLUNTEER_APPLY_BOARD PARENT_TABLE
+    	RIGHT JOIN (SELECT TVABOARD.VOLUNTEER_DATE, COUNT(TVAAPPLIER.ID) APPLY_COUNT 
+               FROM T_VOLUNTEER_APPLY_BOARD TVABOARD
+               LEFT JOIN T_VOLUNTEER_APPLY_APPLIER TVAAPPLIER ON(TVABOARD.VOLUNTEER_DATE = TVAAPPLIER.VOLUNTEER_DATE)
+               WHERE TVABOARD.VOLUNTEER_DATE LIKE #{selectedYearMonth} || '%'
+               GROUP BY TVABOARD.VOLUNTEER_DATE) GROUPING_TABLE
+    	ON (PARENT_TABLE.VOLUNTEER_DATE = GROUPING_TABLE.VOLUNTEER_DATE)
+		ORDER BY PARENT_TABLE.VOLUNTEER_DATE ASC
+	</select>
+	
+	<select id="selectVolunteerApply" parameterType="string" resultType="VolunteerApplyDto">
+		SELECT VOLUNTEER_DATE, LIMIT_DATE, VOLUNTEER_AREA, TM_TABLE.ID, NICKNAME, PHONE, WRITE_DATE_FORMAT,  TITLE, CONTENT_TAG, APPLY_MAX_COUNT, APPLY_COUNT, APPLY_STATE
+		FROM (
+			   SELECT PARENT_TABLE.VOLUNTEER_DATE, LIMIT_DATE, VOLUNTEER_AREA, ID, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD HH24"시" MI"분"') AS WRITE_DATE_FORMAT, TITLE, CONTENT_TAG, APPLY_MAX_COUNT, APPLY_STATE, APPLY_COUNT
+    		   FROM T_VOLUNTEER_APPLY_BOARD PARENT_TABLE
+    		   RIGHT JOIN (
+    		   			   SELECT TVABOARD.VOLUNTEER_DATE, COUNT(TVAAPPLIER.ID) APPLY_COUNT 
+               			   FROM T_VOLUNTEER_APPLY_BOARD TVABOARD
+               			   LEFT JOIN T_VOLUNTEER_APPLY_APPLIER TVAAPPLIER ON(TVABOARD.VOLUNTEER_DATE = TVAAPPLIER.VOLUNTEER_DATE)
+               			   WHERE TVABOARD.VOLUNTEER_DATE = #{volunteer_date}
+               			   GROUP BY TVABOARD.VOLUNTEER_DATE
+               			 ) GROUPING_TABLE
+    		   ON (PARENT_TABLE.VOLUNTEER_DATE = GROUPING_TABLE.VOLUNTEER_DATE)
+		     ) TVAB_TABLE
+		LEFT JOIN T_MEMBER TM_TABLE 
+		ON(TVAB_TABLE.ID = TM_TABLE.ID) 
+	</select>
+	
+	<delete id="deleteApplyVolunteer" parameterType="HashMap">
+		DELETE T_VOLUNTEER_APPLY_APPLIER
+		WHERE ID = #{id} AND 
+		VOLUNTEER_DATE IN (SELECT VOLUNTEER_DATE FROM T_VOLUNTEER_APPLY_BOARD WHERE APPLY_STATE = '모집중' AND VOLUNTEER_DATE = #{volunteer_date})
+	</delete>
+	
+	
+	<!-- 해당 자원봉사 신청자 페이징처리하여 불러오기 -->
+	<select id="selectVolunteerApplierList" parameterType="VolunteerApplierDto" resultType="VolunteerApplierDto">
+		SELECT *	
+		FROM(SELECT ROWNUM no, VOLUNTEER_DATE, TO_CHAR(APPLY_DATE, 'YYYY-MM-DD HH24"시" MI"분"') AS APPLY_DATE_FORMAT, ID, NICKNAME, EMAIL, PHONE	
+		   	 FROM(
+		   		SELECT *
+				FROM T_VOLUNTEER_APPLY_APPLIER
+				JOIN T_MEMBER
+				USING (ID)
+				WHERE VOLUNTEER_DATE = #{volunteer_date}
+				ORDER BY APPLY_DATE ASC
+				)
+			)
+		WHERE no &gt;= #{start_row} AND no &lt;= #{end_row}			
+	</select>
+	
+</mapper>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="volunteerepilogueMapper">
+
+	<insert id="insertVolunteerEpilogue" parameterType="VolunteerEpilogueDto">	
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			SELECT T_VOLUNTEER_EPILOGUE_BOARD_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO T_VOLUNTEER_EPILOGUE_BOARD VALUES(#{no}, #{volunteer_date}, #{id}, SYSDATE, #{title}, #{content}, #{content_tag}, 0, #{thumbnail}, 'Y')
+	</insert>
+	
+	<!-- 자원봉사 후기 글 쓸때 카테고리 가져오기 -->
+	<select id="selectVolunteerEpilogueWriteCategoryList" parameterType="string" resultType="VolunteerEpilogueDto">
+		SELECT VOLUNTEER_DATE, VOLUNTEER_AREA
+		FROM T_VOLUNTEER_APPLY_APPLIER TVAA
+		JOIN T_VOLUNTEER_APPLY_BOARD TAB
+    	USING (VOLUNTEER_DATE)
+		WHERE TVAA.ID = #{id} AND EPILOGUE_WRITE_STATE = 'N' AND JOIN_STATE = '참가'
+		ORDER BY VOLUNTEER_DATE ASC		
+	</select>
+	
+	<update id="updateVolunteerAppilerState" parameterType="VolunteerEpilogueDto">
+		UPDATE T_VOLUNTEER_APPLY_APPLIER 
+		SET EPILOGUE_WRITE_STATE = 'Y'
+		WHERE VOLUNTEER_DATE = #{volunteer_date} AND ID = #{id}
+	</update>
+	
+	<select id="selectCountSearchVolunteerEpilogueList" parameterType="VolunteerEpilogueDto" resultType="_int">
+		SELECT COUNT(*)  
+		FROM T_VOLUNTEER_EPILOGUE_BOARD
+		WHERE ACTIVE = 'Y'
+		<trim prefix="AND">
+			<if test="date_keword != null">
+				VOLUNTEER_DATE LIKE #{date_keword} || '%'
+			</if>
+		</trim>
+		<trim prefix="AND">
+			<if test="id != null">
+				ID = #{id}
+			</if>
+		</trim>
+	</select>
+	
+	<select id="selectSearchVolunteerEpilogue" parameterType="VolunteerEpilogueDto" resultType="VolunteerEpilogueDto">
+		SELECT * 
+		FROM(
+				SELECT NO, ROWNUM RNUM, ID, NICKNAME, REPLY_COUNT, VOLUNTEER_DATE, WRITE_DATE_FORMAT, TITLE, CONTENT, CONTENT_TAG, READ_COUNT, THUMBNAIL
+				FROM(
+					SELECT NO, LAST_LEFT_TB.ID, NICKNAME, REPLY_COUNT, VOLUNTEER_DATE, WRITE_DATE_FORMAT, TITLE, CONTENT, CONTENT_TAG, READ_COUNT, THUMBNAIL
+					FROM(
+						SELECT GROUPING_TABLE.NO, ID, REPLY_COUNT, VOLUNTEER_DATE, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD') AS WRITE_DATE_FORMAT, TITLE, CONTENT, CONTENT_TAG, READ_COUNT, THUMBNAIL 						
+						FROM	(SELECT TVEBOARD.NO, COUNT(TVEREPLY.NO) REPLY_COUNT
+									FROM T_VOLUNTEER_EPILOGUE_BOARD TVEBOARD
+									LEFT JOIN T_VOLUNTEER_EPILOGUE_REPLY TVEREPLY ON(TVEBOARD.NO = TVEREPLY.NO)
+									WHERE ACTIVE = 'Y'
+									<trim prefix="AND">
+										<if test="date_keword != null">
+											VOLUNTEER_DATE LIKE #{date_keword} || '%'
+										</if>
+									</trim>
+									<trim prefix="AND">
+										<if test="id != null">
+											TVEBOARD.ID = #{id}
+										</if>
+									</trim>
+									GROUP BY TVEBOARD.NO) GROUPING_TABLE
+						LEFT JOIN T_VOLUNTEER_EPILOGUE_BOARD PARENT_TABLE			
+						ON (GROUPING_TABLE.NO = PARENT_TABLE.NO)
+					) LAST_LEFT_TB
+					LEFT JOIN T_MEMBER TB_TABLE
+					ON (LAST_LEFT_TB.ID = TB_TABLE.ID)	
+					ORDER BY NO DESC
+				)		
+		)WHERE RNUM &gt;= #{start_row} AND RNUM &lt;= #{end_row}		
+	</select>
+	
+	<select id="selectVolunteerEpilogueCategoryList" parameterType="string" resultType="string">
+		SELECT DISTINCT SUBSTR(VOLUNTEER_DATE, LENGTH(#{categoryKeword})+2, 2)
+		FROM T_VOLUNTEER_EPILOGUE_BOARD
+		WHERE VOLUNTEER_DATE LIKE #{categoryKeword} || '%' AND ACTIVE = 'Y'
+		ORDER BY 1 ASC
+	</select>
+	
+	<select id="selectVolunteerEpilogue" parameterType="_int" resultType="VolunteerEpilogueDto">
+		SELECT NO, NICKNAME, EPILOGUE.VOLUNTEER_DATE, VOLUNTEER_AREA, EPILOGUE.ID, TO_CHAR(EPILOGUE.WRITE_DATE, 'YYYY-MM-DD HH24"시" MI"분"') AS WRITE_DATE_FORMAT, EPILOGUE.TITLE, EPILOGUE.CONTENT, EPILOGUE.CONTENT_TAG, READ_COUNT, EPILOGUE.THUMBNAIL, EPILOGUE.ACTIVE
+		FROM T_VOLUNTEER_EPILOGUE_BOARD EPILOGUE
+		LEFT JOIN T_VOLUNTEER_APPLY_BOARD APPLY
+		ON (EPILOGUE.VOLUNTEER_DATE = APPLY.VOLUNTEER_DATE)
+		LEFT JOIN T_MEMBER TMEM
+		ON (EPILOGUE.ID = TMEM.ID)
+		WHERE NO = #{no} AND ACTIVE = 'Y'
+	</select>
+	
+	<!--게시글 조회수 증가 -->
+	<update id="updateAddReadCountVolunteerEpilogue" parameterType="_int">
+		UPDATE T_VOLUNTEER_EPILOGUE_BOARD
+		SET READ_COUNT = READ_COUNT + 1
+		WHERE NO = #{no}
+	</update>
+	
+	<select id="selectVolunteerEpilogueReplyList" parameterType="VolunteerEpilogueReplyDto" resultType="VolunteerEpilogueReplyDto">
+		SELECT * 
+		FROM(	
+			SELECT ROWNUM RNUM, REPLY_NO, NO, REPLY_CONTENT, NICKNAME, ID, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD HH24"시" MI"분"') AS WRITE_DATE_FORMAT 
+			FROM(
+				SELECT *
+				FROM T_VOLUNTEER_EPILOGUE_REPLY
+				JOIN T_MEMBER
+				USING(ID)
+				WHERE NO = #{no}
+				ORDER BY REPLY_NO DESC		
+			)
+		)	
+		WHERE RNUM &gt;= #{start_row} AND RNUM &lt;= #{end_row}
+	</select>
+	
+	<select id="selectCountVolunteerEpilogueReplyList" parameterType="VolunteerEpilogueReplyDto" resultType="_int">
+		SELECT COUNT(*)  
+		FROM T_VOLUNTEER_EPILOGUE_REPLY
+		WHERE NO = #{no}
+	</select>
+	
+	<insert id="insertVolunteerEpilogueReply" parameterType="VolunteerEpilogueReplyDto">
+		INSERT INTO T_VOLUNTEER_EPILOGUE_REPLY VALUES(T_VOLUNTEER_EPILOGUE_REPLY_SEQ.NEXTVAL, #{no}, #{reply_content}, #{id}, SYSDATE)
+	</insert>
+	
+	<update id="updateVolunteerEpilogueReply" parameterType="VolunteerEpilogueReplyDto">
+		UPDATE T_VOLUNTEER_EPILOGUE_REPLY 
+		SET REPLY_CONTENT = #{reply_content}, WRITE_DATE = SYSDATE
+		WHERE NO = #{no} AND REPLY_NO = #{reply_no} AND ID = #{id}
+	</update>
+	
+	<delete id="deleteVolunteerEpilogueReply" parameterType="VolunteerEpilogueReplyDto">
+		DELETE FROM T_VOLUNTEER_EPILOGUE_REPLY 
+		WHERE NO = #{no} AND REPLY_NO = #{reply_no}
+	</delete>
+	
+	<!-- 자원봉사 후기 쓰기 버튼 클릭 시 상태값 알아오기 -->
+	<select id="selectVolunteerEpiloguePossibleState" parameterType="string" resultType="VolunteerApplierDto">
+		SELECT *
+		FROM T_VOLUNTEER_APPLY_APPLIER
+		WHERE ID = #{id} AND JOIN_STATE = '참가'
+	</select>
+	
+	<update id="updateVolunteerEpilogue" parameterType="VolunteerEpilogueDto">
+		UPDATE T_VOLUNTEER_EPILOGUE_BOARD 
+		SET WRITE_DATE = SYSDATE, TITLE= #{title}, CONTENT_TAG = #{content_tag}, 
+			CONTENT = #{content}, THUMBNAIL = #{thumbnail}	
+		WHERE NO = #{no} AND ACTIVE = 'Y'
+	</update>
+	
+	<!-- 자원봉사 후기 글 상태값 변경(안보이게 하기) -->
+	<update id="updateNonActiveVolunteerEpilogue" parameterType="VolunteerEpilogueDto">
+		UPDATE T_VOLUNTEER_EPILOGUE_BOARD
+		SET ACTIVE = 'N'
+		WHERE NO = #{no} AND ID = #{id}
+	</update>
+	
+	<!-- 자원봉사 후기 글 상태값 변경 시 다시 쓸 수 있게 상태값 변경 -->
+	<update id="updateVolunteerEpilogueStateChange" parameterType="VolunteerEpilogueDto">
+		UPDATE T_VOLUNTEER_APPLY_APPLIER
+		SET EPILOGUE_WRITE_STATE = 'N'
+		WHERE VOLUNTEER_DATE = #{volunteer_date} AND ID = #{id}
+	</update>
+	
+</mapper>

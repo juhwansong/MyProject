@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qnaMapper">
+	
+	
+	<!-- Qna목록 -->
+	<select id="selectQnaList" parameterType="hashMap" resultType="QnaDto">
+		SELECT * FROM (SELECT ROWNUM RNUM, NO, CATEGORY, TITLE, ID, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD') WRITE_DATE,
+								TO_CHAR(ANSWER_WRITE_DATE, 'YYYY-MM-DD') ANSWER_WRITE_DATE, STATE
+						FROM (SELECT * FROM V_QNA 
+		<if test="type.equals('USER')">
+			 WHERE ID = #{userid} 
+		</if>
+			ORDER BY NO DESC))
+			WHERE RNUM &gt;= #{startrow} AND RNUM &lt;= #{endrow}		
+	</select>
+	
+	
+	<!-- Qna 상세보기 -->
+	<select id="selectQna" parameterType="_int" resultType="QnaDto">
+		SELECT NO, TITLE, CONTENT, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD AM HH:MI:SS') WRITE_DATE,
+			   ANSWER_CONTENT, ANSWER_ID, TO_CHAR(ANSWER_WRITE_DATE, 'YYYY-MM-DD AM HH:MI:SS') ANSWER_WRITE_DATE
+		FROM V_QNA WHERE NO = #{no}
+	</select>
+	
+	
+	<!-- Qna 총 게시글 개수 (관리자) -->
+	<select id="selectCountListAdmin" resultType="_int">
+		SELECT COUNT(*) FROM V_QNA
+	</select>
+	
+	
+	<!-- Qna 총 게시글 개수 (회원) -->
+	<select id="selectCountList" parameterType="QnaDto" resultType="_int">
+		SELECT COUNT(*) FROM V_QNA WHERE ID = #{id}
+	</select>
+	
+	
+	<!-- Qna 검색 결과 개수 -->
+	<select id="selectSearchCount" parameterType="hashMap" resultType="_int">
+		SELECT COUNT(*) FROM V_QNA WHERE 
+		<choose>
+			<when test="where.equals('admin')">			
+				<choose>
+					<when test="kind.equals('category')">
+						${kind} = #{category}  
+					</when>
+					<when test="kind.equals('state')">
+						${kind} = #{state}  
+					</when>
+					<otherwise>
+						UPPER(${kind}) LIKE '%'||UPPER(#{keyword})||'%' 
+					</otherwise>
+				</choose>				
+			</when>
+			<otherwise>	
+				<choose>
+					<when test="kind.equals('category')">
+						${kind} = #{category} AND ID = #{userid} 
+					</when>
+					<otherwise>
+						UPPER(${kind}) LIKE '%'||UPPER(#{keyword})||'%' AND ID = #{userid} 
+					</otherwise>
+				</choose>	
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<!-- Qna 검색 결과 목록 -->
+	<select id="selectSearchKeyword" parameterType="hashMap" resultType="QnaDto">
+		SELECT * FROM (SELECT ROWNUM RNUM, NO, CATEGORY, TITLE, ID, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD')
+							  WRITE_DATE, TO_CHAR(ANSWER_WRITE_DATE, 'YYYY-MM-DD') ANSWER_WRITE_DATE, STATE
+						FROM (SELECT * FROM V_QNA WHERE  		
+		<choose>
+			<when test="where.equals('admin')">			
+				<choose>
+					<when test="kind.equals('category')">
+						${kind} = #{category}  
+					</when>
+					<when test="kind.equals('state')">
+						${kind} = #{state} 
+					</when>
+					<otherwise>
+						 UPPER(${kind}) LIKE '%'||UPPER(#{keyword})||'%'  
+					</otherwise>
+				</choose>				
+			</when>
+			<otherwise>	
+				<choose>
+					<when test="kind.equals('category')">
+						${kind} = #{category} AND ID = #{userid} 
+					</when>
+					<otherwise>
+						UPPER(${kind}) LIKE '%'||UPPER(#{keyword})||'%' AND ID = #{userid} 
+					</otherwise>
+				</choose>	
+			</otherwise>
+		</choose>
+			 ORDER BY NO DESC)) WHERE RNUM &gt;= #{startrow} AND RNUM &lt;= #{endrow}
+	</select>
+	
+	
+	<!-- Qna 등록 -->
+	<insert id="insertQna" parameterType="QnaDto">
+		INSERT INTO T_QNA
+		VALUES (T_QNA_SEQ.NEXTVAL, #{category}, #{title}, #{content}, #{id}, DEFAULT, NULL, NULL, NULL, DEFAULT, DEFAULT)
+	</insert>
+	
+	
+	<!-- Qna 수정 -->
+	<update id="updateQna" parameterType="QnaDto">
+		UPDATE T_QNA SET CONTENT = #{content} WHERE NO = #{no}
+	</update>
+	
+	
+	<!-- Qna 삭제 -->
+	<update id="deleteQna" parameterType="_int">
+		UPDATE T_QNA SET ACTIVE = 'N' WHERE NO = #{no}
+	</update>
+	
+	
+	<!-- Qna 답변 등록/수정 -->
+	<update id="insertQnaAnswer" parameterType="QnaDto">
+		UPDATE T_QNA
+		SET ANSWER_CONTENT = #{answer_content}, ANSWER_ID = #{id}, ANSWER_WRITE_DATE = SYSDATE, STATE = '답변완료'
+		WHERE NO = #{no}
+	</update>
+	
+	
+	<!-- Qna 답변 삭제 -->
+	<update id="deleteQnaAnswer" parameterType="_int">
+		UPDATE T_QNA
+		SET ANSWER_CONTENT = DEFAULT, ANSWER_ID = DEFAULT, ANSWER_WRITE_DATE = DEFAULT, STATE = DEFAULT
+		WHERE NO = #{no}
+	</update>
+	
+	
+</mapper>

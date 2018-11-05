@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="streamingMapper">
+
+<resultMap type="StreamingDto" id="StreamingList">
+		<result column="no" property="no"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="content_tag" property="content_tag"/>
+		<result column="write_date" property="write_date"/>
+		<result column="id" property="id"/>
+		<result column="thumbnail" property="thumbnail"/>
+		<result column="active" property="active"/>
+</resultMap>
+
+
+<resultMap type="StreamingDto" id="Streaming">
+		<id column="no" property="no"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="content_tag" property="content_tag"/>
+		<result column="write_date" property="write_date"/>
+		<result column="id" property="id"/>
+		<result column="thumbnail" property="thumbnail"/>
+		<result column="active" property="active"/>
+</resultMap>
+
+<select id="selectStreamingList" parameterType="hashMap" resultType="StreamingDto" resultMap="StreamingList">
+	SELECT * FROM (SELECT ROWNUM RNUM, NO, TITLE, CONTENT, THUMBNAIL FROM (SELECT * FROM T_STREAMING WHERE ACTIVE = 'Y' ORDER BY NO DESC)
+	WHERE NO NOT IN (SELECT MAX(NO) FROM T_STREAMING) ORDER BY NO DESC)
+	WHERE RNUM &gt;= #{startrow} AND RNUM &lt;= #{endrow}
+</select>
+
+<select id="selectStreaming" parameterType="_int" resultMap="Streaming">
+	SELECT * FROM T_STREAMING WHERE NO = #{no}
+</select>
+
+<!-- <select id="selectStreamingLive"  resultType="StreamingDto">
+	SELECT * FROM (SELECT * FROM T_STREAMING WHERE ACTIVE = 'Y' ORDER BY NO DESC) WHERE ROWNUM = 1
+</select> -->
+<select id="selectStreamingLive"  resultType="StreamingDto">
+SELECT * 
+		FROM(
+				SELECT NO, ROWNUM RNUM, ID, NICKNAME, REPLY_COUNT, TITLE, CONTENT, THUMBNAIL
+				FROM(
+        
+					SELECT NO, LAST_LEFT_TB.ID, NICKNAME, REPLY_COUNT,  TITLE, CONTENT,  THUMBNAIL
+					FROM(
+          
+						SELECT GROUPING_TABLE.NO, ID, REPLY_COUNT, TITLE, CONTENT, THUMBNAIL 						
+          	FROM	(
+                        SELECT TVEBOARD.NO, COUNT(TVEREPLY.NO) REPLY_COUNT
+                        FROM T_STREAMING TVEBOARD
+                        LEFT JOIN T_STREAMING_REPLY TVEREPLY ON(TVEBOARD.NO = TVEREPLY.NO )
+                        WHERE ACTIVE = 'Y'
+                        
+                        GROUP BY TVEBOARD.NO) GROUPING_TABLE
+              
+          LEFT JOIN T_STREAMING PARENT_TABLE ON (GROUPING_TABLE.NO = PARENT_TABLE.NO) ) LAST_LEFT_TB
+					LEFT JOIN T_MEMBER TB_TABLE ON (LAST_LEFT_TB.ID = TB_TABLE.ID)	
+					ORDER BY NO DESC)		
+		)WHERE ROWNUM = 1
+</select>
+
+<select id="selectCountStreaming" parameterType="_int" resultType="_int">
+	SELECT COUNT(*) FROM T_STREAMING WHERE ACTIVE = 'Y'
+</select>
+
+<insert id="insertStreaming" parameterType="StreamingDto" flushCache="true">
+	INSERT INTO T_STREAMING VALUES(T_STREAMING_SEQ.NEXTVAL, #{title}, #{content}, #{content}, SYSDATE, #{id}, #{thumbnail}, DEFAULT)
+</insert>
+
+<update id="updateStreaming">
+	UPDATE T_STREAMING SET TITLE = #{title}, CONTENT = #{content}, CONTENT_TAG = #{content}, THUMBNAIL = #{thumbnail} WHERE NO = #{no}
+</update>
+
+<update id="deleteStreaming">
+	UPDATE T_STREAMING SET ACTIVE = 'N' WHERE NO = #{no}
+</update>
+
+<!-- <select id="selectLastStreamingList" parameterType="StreamingDto" resultType="StreamingDto">
+	SELECT * FROM (SELECT ROWNUM RNUM, NO, TITLE, CONTENT, THUMBNAIL FROM (SELECT * FROM T_STREAMING WHERE ACTIVE = 'Y' ORDER BY NO DESC)
+	WHERE NO NOT IN (SELECT MAX(NO) FROM T_STREAMING) ORDER BY NO DESC)
+	WHERE RNUM &gt;= #{start_row} AND RNUM &lt;= #{end_row}
+</select> -->
+
+<select id="selectLastStreamingList" parameterType="StreamingDto" resultType="StreamingDto">
+SELECT * 
+		FROM(
+				SELECT NO, ROWNUM RNUM, ID, NICKNAME, REPLY_COUNT, TITLE, CONTENT, THUMBNAIL
+				FROM(
+        
+					SELECT NO, LAST_LEFT_TB.ID, NICKNAME, REPLY_COUNT,  TITLE, CONTENT,  THUMBNAIL
+					FROM(
+          
+						SELECT GROUPING_TABLE.NO, ID, REPLY_COUNT, TITLE, CONTENT, THUMBNAIL 						
+          				FROM (
+                       			 SELECT TVEBOARD.NO, COUNT(TVEREPLY.NO) REPLY_COUNT
+                        		 FROM T_STREAMING TVEBOARD
+                        		 	  LEFT JOIN T_STREAMING_REPLY TVEREPLY ON(TVEBOARD.NO = TVEREPLY.NO )
+                        			  WHERE ACTIVE = 'Y'
+                                
+                      				  GROUP BY TVEBOARD.NO) 
+                      	GROUPING_TABLE
+              			LEFT JOIN T_STREAMING PARENT_TABLE ON (GROUPING_TABLE.NO = PARENT_TABLE.NO) ) LAST_LEFT_TB
+				     LEFT JOIN T_MEMBER TB_TABLE ON (LAST_LEFT_TB.ID = TB_TABLE.ID)	
+					ORDER BY NO DESC)
+          WHERE NO NOT IN (SELECT MAX(NO) FROM T_STREAMING)		
+		)WHERE RNUM &gt;= #{start_row} AND RNUM &lt;= #{end_row}	
+</select>
+
+
+
+<select id="selectStreamingReplyList" parameterType="StreamingReplyDto" resultType="StreamingReplyDto">
+SELECT * 
+		FROM(	
+			SELECT ROWNUM RNUM, REPLY_NO, NO,REPLY_CONTENT, NICKNAME,ID, WRITE_DATE_FORMAT
+			 FROM(		
+				SELECT REPLY_NO, NO,REPLY_CONTENT, NICKNAME, TM.ID, TO_CHAR(WRITE_DATE, 'YYYY-MM-DD HH"시" MI"분"') AS WRITE_DATE_FORMAT 
+				FROM(
+					SELECT *
+					FROM T_STREAMING_REPLY
+					WHERE NO = #{no}
+					
+				) MM
+				LEFT JOIN T_MEMBER TM
+				ON(MM.ID = TM.ID)
+				ORDER BY REPLY_NO DESC	
+				)
+		)
+		WHERE RNUM &gt;= #{start_row} AND RNUM &lt;= #{end_row}
+		
+</select>
+
+<select id="selectCountStreamingReplyList" parameterType="StreamingReplyDto" resultType="_int">
+		SELECT COUNT(*)
+		FROM T_STREAMING_REPLY
+		WHERE NO = #{no}
+</select>
+
+<insert id="insertStreamingReply" parameterType="StreamingReplyDto">
+	INSERT INTO T_STREAMING_REPLY VALUES(T_STREAMING_REPLY_SEQ.NEXTVAL, #{no}, #{id}, SYSDATE, #{reply_content})
+</insert>
+
+<update id="updateStreamingReply" parameterType="StreamingReplyDto">
+	UPDATE T_STREAMING_REPLY SET WRITE_DATE = SYSDATE, REPLY_CONTENT = #{reply_content} WHERE NO = #{no} AND REPLY_NO = #{reply_no} AND ID = #{id}
+</update>
+
+<delete id="deleteStreamingReply" parameterType="StreamingReplyDto">
+	DELETE T_STREAMING_REPLY WHERE NO = #{no} AND REPLY_NO = #{reply_no} AND ID = #{id}
+</delete>
+
+
+
+
+
+
+
+
+
+</mapper>

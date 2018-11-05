@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="basketMapper">
+
+	<resultMap type="BasketDto" id="resultBasket">
+		<result property="product_id" column="product_id" />
+		<result property="amount" column="amount" />
+		<result property="id" column="id" />
+	</resultMap>
+
+	<insert id="insertBasket" parameterType="BasketDto">
+		insert into t_basket values (#{product_id}, #{amount}, #{id})
+	</insert>
+	
+	<delete id="deleteOne" parameterType="BasketDto">
+		delete from t_basket where product_id = #{product_id} and id = #{id}
+	</delete>
+	
+	<delete id="deleteAll" parameterType="string">
+		delete from t_basket where id = #{id}
+	</delete>
+	
+	<delete id="deleteCheck" parameterType="hashmap">
+		delete from t_basket where id = #{id} and product_id in 
+		<foreach collection="list" item="l" index="index" separator="," open="(" close=")">
+			'${list[index]}'
+		</foreach>
+	</delete>
+	
+	<delete id="deletePayment" parameterType="hashmap">
+		delete from t_basket where id = #{id} and product_id in 
+		<foreach collection="list" item="l" index="index" separator="," open="(" close=")">
+			#{l.product_id}
+		</foreach>
+	</delete>
+	
+	<update id="countUpdate" parameterType="BasketDto">
+		update t_basket set amount = #{amount} where product_id = #{product_id} and id = #{id}
+	</update>
+</mapper>

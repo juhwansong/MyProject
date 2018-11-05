@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">
+
+	<!-- ============================ SELECT ============================ -->
+	<!-- 회원 리스트 카운트 -->
+	<select id="selectListCount" resultType="int">
+		SELECT count(*) FROM T_MEMBER
+		WHERE TYPE = 'USER'
+	</select>
+
+	<!-- 회원 리스트 조회 -->
+	<select id="selectList" resultType="MemberDto">
+		SELECT ROWNUM AS RNUM, ID, NICKNAME, EMAIL, PHONE, TYPE, STATE, ID_TYPE
+		FROM (
+			SELECT * FROM T_MEMBER
+			WHERE TYPE = 'USER'
+			ORDER BY ID
+		)
+	</select>
+
+	<!-- 로그인 -->
+	<select id="selectLogin" parameterType="MemberDto" resultType="MemberDto">
+		SELECT * FROM T_MEMBER
+		WHERE ID = #{id}
+		AND STATE = '정상'
+	</select>
+
+	<!-- 이메일 중복체크 -->
+	<select id="selectCheckId" parameterType="String" resultType="int">
+		SELECT count(*) FROM T_MEMBER
+		WHERE ID = #{id}
+	</select>
+
+	<!-- 닉네임 중복체크 -->
+	<select id="selectCheckNickname" parameterType="HashMap" resultType="int">
+		SELECT count(*) FROM T_MEMBER
+		WHERE NICKNAME = #{nickname}
+		<if test="withoutNickname != null">
+			AND NICKNAME != #{withoutNickname}
+		</if>
+	</select>
+
+	<!-- id, email, phone 체크 -->
+	<select id="selectCheckInfo" parameterType="MemberDto" resultType="MemberDto">
+		SELECT * FROM T_MEMBER
+		WHERE ID = #{id}
+		AND EMAIL = #{email}
+		AND PHONE = #{phone}
+	</select>
+
+	<!-- ============================ INSERT ============================ -->
+	<!-- 회원가입 -->
+	<insert id="insertMember" parameterType="MemberDto" flushCache="true">
+		INSERT INTO T_MEMBER VALUES (
+			#{id}, #{password}, #{nickname}, #{email}, #{phone}, DEFAULT, DEFAULT,
+			<choose>
+				<when test="null == id_type">DEFAULT</when>
+				<otherwise>#{id_type}</otherwise>
+			</choose>
+			, DEFAULT
+		)
+	</insert>
+
+	<!-- ============================ UPDATE ============================ -->
+	<!-- 회원정보 업데이트 -->
+	<update id="updateMember" parameterType="MemberDto" flushCache="true">
+		UPDATE T_MEMBER
+		<trim prefix="SET" prefixOverrides=",">
+			<if test="password != null">PASSWORD = #{password}</if>
+			<if test="nickname != null">, NICKNAME = #{nickname}</if>
+			<if test="email != null">, EMAIL = #{email}</if>
+			<if test="phone != null">, PHONE = #{phone}</if>
+			<if test="state != null">, STATE = #{state}</if>
+			<if test="token != null">
+				<choose>
+					<when test="'' == token">
+						, TOKEN = NULL
+					</when>
+					<otherwise>
+						, TOKEN = #{token}
+					</otherwise>
+				</choose>
+			</if>
+		</trim>
+		WHERE ID = #{id}
+	</update>
+
+</mapper>

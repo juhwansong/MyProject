@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+.vm-adminMember .dataTables_filter { width: auto; }
+
+.vm-adminMember__submit-box { margin-bottom: 20px; }
+.vm-adminMember__submit-box .btn { width: 100%; padding: 10px 0; font-weight: 600; }
+.vm-adminMember .table { width: 100% !important; margin-top: 14px !important; transition: opacity 350ms; opacity: 0; }
+html.on-ready .vm-adminMember .table { opacity: 1; }
+.vm-adminMember .table th,
+.vm-adminMember .table td { text-align: center; vertical-align: middle; }
+.vm-adminMember .table input[type="text"],
+.vm-adminMember .table select { width: 100%; text-align: center; }
+
+.vm-adminMember__hide-text { overflow: hidden; width: 0; height: 0; }
+.vm-adminMember__original-value { color: #fff; line-height: 20px; font-weight: 600; }

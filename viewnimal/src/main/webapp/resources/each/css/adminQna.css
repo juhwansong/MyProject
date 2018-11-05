@@ -1,0 +1,79 @@
+@CHARSET "UTF-8";
+
+
+.vm-adminQna__tr{
+	cursor: pointer;
+}
+
+.vm-adminQna__table {
+	margin-bottom: 1rem;
+}
+
+.vm-adminQna__div-top {
+	width:100%;
+	display:inline-block;
+	margin-right: 1rem;
+}
+
+
+.vm-adminQna__div-outline{
+	min-height: 7rem;
+	padding: 0rem 5rem 0rem 5rem;
+}
+
+.vm-adminQna__div-inline {
+	padding: .5rem;
+}
+
+.vm-adminQna__div-inner {
+	display: inline-block;
+	width: 100%;
+}
+
+.vm-adminQna__div-inner-magin {
+	display: inline-block;
+	width: 96%;
+	margin-left: 2.5rem;
+}
+
+
+.vm-adminQna__span-bold {
+	font-weight: bold;
+	font-size: 1.5rem;
+}
+
+.vm-adminQna__span-small {
+	font-size: 1.2rem;
+}
+
+.vm-adminQna__span-content {
+	letter-spacing: -.05rem;
+	margin-left: 3rem;
+	font-size: 1.5rem;
+}
+
+.vm-adminQna__hr-margin {
+	margin: .5rem 2rem .5rem 2rem;
+}
+
+
+.vm-adminQna__hr-top {
+	margin: 2rem 0rem 2rem 0rem;
+}
+
+
+.vm-adminQna__textarea {
+	width: 97%;
+	margin-left: 3rem;
+	resize: vertical;
+}
+
+
+.vm-adminQna th {
+	text-align: center;
+}
+
+
+.vm-adminQna__ul-margin {
+	margin: 0 0 0 0;
+}

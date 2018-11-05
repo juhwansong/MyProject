@@ -1,0 +1,411 @@
+@CHARSET "UTF-8";
+
+.vm-shopBasket__title {
+	width: 100%;
+	margin: 0 auto;
+	padding: 10px 0 30px 0;
+}
+
+.vm-shopBasket__title h2 {
+	height: 30px;
+	width: 200px;
+	margin: 0 auto;
+	font-size: 20px;
+	font-weight: bold;
+	float: left;
+	border-bottom: 1px solid #272823;
+}
+
+.vm-shopBasket__inner__order {
+	position: relative;
+	margin: 30px 0 0;
+	line-height: 1.5;
+	padding: 0;
+}
+
+.vm-shopBasket__inner__order ul {
+	border: 1px solid #cbcdce;
+	border-bottom-color: #222;
+	height: 38px;
+	border-left: 0;
+	background: #fafafa;
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopBasket__inner__order ul li {
+	float: left;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopBasket__inner__order ul li a {
+	position: relative;
+	top: -1px;
+	margin: 0 0 -1px;
+	border: 1px solid #222;
+	color: #fff;
+	font-weight: bold;
+	background: #222;
+	display: block;
+	min-width: 168px;
+	height: 38px;
+	padding: 0 15px;
+	line-height: 38px;
+	text-align: center;
+}
+
+.vm-shopBasket__info {
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopBasket__info__title {
+	height: 38px;
+	margin: 0;
+	padding: 0 0 0 9px;
+	border: 1px solid #d7d5d5;
+	border-bottom: 0;
+	line-height: 38px;
+	background: #f6f6f6;
+}
+
+.vm-shopBasket__info__title h3 {
+	color: #222;
+	font-size: 16px;
+	font-weight: bold;
+	margin: 0;
+	padding-top: 5px;
+}
+
+.vm-shopBasket__info table {
+	table-layout: fixed;
+	margin: 0 0 1px;
+	border: 1px solid #d7d5d5;
+	color: #353535;
+	line-height: 1.5;
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+.vm-shopBasket__info table thead tr {
+	text-align: center;
+}
+
+.vm-shopBasket__info__checkbox  input {
+	font-size: 100%;
+	vertical-align: middle;
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopBasket__info th {
+	padding: 10px 0;
+	font-weight: normal;
+	background: #fbfafa;
+	vertical-align: middle;
+	margin: 0;
+	text-align: center;
+}
+
+.vm-shopBasket__info__img {
+	border: 0;
+}
+
+.vm-shopBasket__info__productInfo {
+	width: auto;
+}
+
+.vm-shopBasket__info table tbody td {
+	padding : 10px 0;
+	border-top: 1px solid #e9e9e9;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.vm-shopBasket__info__tbody__img {
+	width: 92px;
+}
+
+.vm-shopBasket__info__tbody__img img {
+	width: 80;
+	height: 120px;
+}
+
+.vm-shopBasket__info__tbody__img a {
+	text-decoration: none;
+	color: #000;
+}
+
+.vm-shopBasket__info__tbody__productInfo {
+	padding-left: 10px;
+	text-align: left;
+}
+
+.vm-shopBasket__info strong {
+	font-weight: bold;
+}
+
+.vm-shopBasket__info__tbody__count input {
+	width: 40px;
+	height: 23px;
+	padding: 0 0 0 5px;
+	border: 0;
+	line-height: 23px;
+}
+
+.vm-shopBasket__info__tbody__count__span {
+	position: relative;
+	display: inline-block;
+	width: 50px;
+	height: 25px;
+	text-align: center;
+	margin: 0 1px 0 0;
+	vertical-align: middle;
+}
+
+.vm-shopBasket__info__tbody__delivery {
+	color: #757575;
+}
+
+.vm-shopBasket__info__tbody__select a {
+	width: 86px;
+	text-decoration: none;
+	color: #000;
+	cursor: pointer;
+}
+
+.vm-shopBasket__info table tfoot {
+	display: table-footer-group;
+	vertical-align: middle;
+	border-color: inherit;
+}
+
+.vm-shopBasket__info table tfoot td {
+	padding: 15px 10px 17px;
+	background: #fbfafa;
+	text-align: right;
+}
+
+.vm-shopBasket__info__strong {
+	float: left;
+	margin: 6px 0 0;
+	font-weight: normal;
+}
+
+.vm-shopBasket__info table tfoot tr td strong {
+	font-weight: bold;
+}
+
+.vm-shopBasket__info__strong__total {
+	margin: 0 0 0 15px;
+	color: #ff0000;
+	font-weight: bold;
+}
+
+.vm-shopBasket__checkDelete {
+	overflow: hidden;
+	margin: 10px 0 50px;
+	text-align: right;
+	padding: 0;
+}
+
+.vm-shopBasket__checkDelete span {
+	float: left;
+	text-align: right;
+}
+
+.vm-shopBasket__checkDelete span strong {
+	margin: 0 6px 0 10px;
+	color: #353535;
+	line-height: 24px;
+	font-weight: bold;
+}
+
+.vm-shopBasket__total {
+	border: 1px solid #222;
+	color: #353535;
+	line-height: 1.5;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+.vm-shopBasket__total table {
+	width: 100%;
+	border: 0;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+.vm-shopBasket__total table thead th {
+	height: 39px;
+	line-height: 39px;
+	background: #fbfafa;
+	vertical-align: top;
+}
+
+.vm-shopBasket__total table tbody td {
+	height: 58px;
+	border-top: 1px solid #e9e9e9;
+	border-left: 1px solid #e9e9e9;
+	line-height: 58px;
+	text-align: center;
+	font-size: 23px;
+	vertical-align: top;
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopBasket__total__table__td {
+	color: #ff0000;
+	font-weight: bold;
+}
+
+.vm-shopBasket__orderBtn {
+	position: relative;
+	margin: 20px 0 50px;
+	text-align: center;
+	padding: 0;
+}
+
+.vm-shopBasket__orderBtn div {
+	display: inline-block;
+	width: 140px;
+	font-size: 14px;
+	margin: 2px;
+	padding: 0;
+}
+
+.vm-shopBasket__orderBtn div .vm-shopBasket__orderBtn__allOrder {
+	background-color: #5b75e7;
+	color: #fff;
+}
+
+.vm-shopBasket__orderBtn div a {
+	padding: 10px;
+	width: 75%;
+	/*height: 40px;*/
+	display: block;
+	text-align: center;
+	vertical-align: middle;
+	text-decoration: none;
+	font-size: 13px;
+}
+
+.vm-shopBasket__operation {
+	margin: 40px 0 0;
+	border: 1px solid #e8e8e8;
+	line-height: 18px;
+	padding: 0;
+}
+
+.vm-shopBasket__operation h3 {
+	padding: 9px 0 6px 10px;
+	border-bottom: 1px solid #e8e8e8;
+	color: #353535;
+	font-size: 12px;
+	background: #fbfbfb;
+	margin: 0;
+}
+
+.vm-shopBasket__operation div {
+	padding: 0 9px 12px;
+	margin: 0;
+}
+
+.vm-shopBasket__operation div h4 {
+	margin: 22px 0 -4px;
+	color: #000;
+	font-size: 14px;
+	font-weight: normal;
+	padding: 0;
+}
+
+.vm-shopBasket__operation div h4:first-child {
+	margin-top: 13px;
+}
+
+.vm-shopBasket__operation div ol {
+	margin: 15px 0 0 28px;
+	padding: 0;
+}
+
+.vm-shopBasket__operation div ul li {
+	padding : 0 0 0 25px;
+	color: #757575;
+	list-style: none;
+	margin: 0;
+}
+
+.vm-shopBasket__emptyBasket {
+	padding: 0;
+	margin: 0;
+}
+
+.vm-shopBasket__emptyBasket p {
+	padding : 50px 0;
+	text-align: center;
+	color: #757575;
+	border-bottom: 1px solid #e8e8e8;
+	margin: 0;
+}
+
+.vm-shopProductList__product__countSelect__table tbody span a {
+	text-decoration: none;
+	color: #000;
+	height: 13px;
+}
+
+.vm-shopBasket__up {
+	left: 27px;
+	top: 0px;
+	position: absolute;
+}
+
+.vm-shopBasket__down {
+	left: 27px;
+	bottom: 0px;
+	position: absolute;
+}
+
+.vm-shopBasket__info__tbody__count {
+	/*width: 24px;*/
+	vertical-align: middle;
+	text-align: center;
+}
+
+.vm-shopBasket__info__tbody__countChange {
+	margin-top: 4px;
+	padding: 2px 20px;
+}
+/*.vm-shopBasket__info__tbody__countChange img {
+	vertical-align: middle;
+}
+
+.vm-shopBasket__info__tbody__countChange span {
+	font-size: 16px;
+}*/
+
+.vm-shopBasket__info__tbody__productInfo a {
+	font-size: 16px;
+	font-weight: bold;
+	color: #000;
+}
+
+#oneBuynow {
+	background-color: #5b75e7;
+	color: #fff;
+}
+
+.vm-shopBasket__checkDelete a {
+	background-color: #5b75e7;
+	color: #fff;
+}
+
+
+
+
+

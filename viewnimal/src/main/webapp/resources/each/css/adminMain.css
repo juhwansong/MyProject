@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+.vm-admin body .container.body .right_col.vm-adminMain { background-color: #f9f9f9; }
+.vm-adminMain__title {
+	font-size: 40px;
+	color: #1ABB9C;
+	font-weight: 600;
+	margin-bottom: 50px;
+}
+.vm-adminMain__sec {
+	margin-top: 40px;
+	padding: 10px;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	box-shadow: 0 0 10px 0 #ccc;
+	transform: translateY(100px);
+	opacity: 0;
+}
+.vm-adminMain__sec.on {
+	transition: 350ms;
+	transition-property: transform, opacity;
+	transform: translateY(0);
+	opacity: 1;
+}
+.vm-adminMain .tile_count .tile_stats_count { margin-bottom: 0; }
+.vm-adminMain .tile_count .count_top { font-size: 18px; font-weight: 600; }
+.vm-adminMain .tile_count .count_top i { margin-right: 5px; }
+.vm-adminMain .tile_count .count_bottom { font-size: 14px; }

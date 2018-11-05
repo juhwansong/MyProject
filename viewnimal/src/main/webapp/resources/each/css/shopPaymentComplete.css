@@ -1,0 +1,309 @@
+@CHARSET "UTF-8";
+
+.vm-shopPaymentComplete__title {
+	width: 100%;
+	margin: 0 auto;
+	padding: 10px 0 30px;
+}
+
+.vm-shopPaymentComplete__title h2 {
+	height: 30px;
+	width: 200px;
+	font-size: 22px;
+	font-weight: bold;
+	float: left;
+	margin: 0 auto;
+	border-bottom: 1px solid #000;
+}
+
+.vm-shopPaymentComplete__orderNo {
+	margin: 30px auto 0;
+	padding: 30px;
+	color: #353535;
+	border: 1px solid #e8e8e8;
+	background: #fafafa;
+	line-height: 1.5;
+	text-align: center;
+}
+
+.vm-shopPaymentComplete__orderNo p {
+	margin: 0 0 10px;
+	padding: 0;
+	display: block;
+}
+
+.vm-shopPaymentComplete__orderNo p strong {
+	display: block;
+	margin: 0 0 7px;
+	color: #000;
+	font-size: 20px;
+	font-family: gulim, sans-serif;
+	font-weight: bold;
+}
+
+.vm-shopPaymentComplete__orderNo p a {
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.vm-shopPaymentComplete__orderNo ul {
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__orderNo ul li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__orderNo ul li strong {
+	font-size: 16px;
+	letter-spacing: -1px;
+	font-weight: bold;
+}
+
+.vm-shopPaymentComplete__orderArea {
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__orderArea__title {
+	margin: 30px 0 10px 10px;
+}
+
+.vm-shopPaymentComplete__orderArea__title h3 {
+	color: #000;
+	font-size: 18px;
+	font-weight: bold;
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__orderArea__boardView {
+	border: 1px solid #d7d5d5;
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__orderArea__boardView table {
+	table-layout: fixed;
+	color: #353535;
+	line-height: 1.5;
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+.vm-shopPaymentComplete__orderArea__boardView th {
+	width: 120px;
+	padding: 10px 0 10px 20px;
+	border-right: 1px solid #e9e9e9;
+	font-weight: normal;
+	text-align: left;
+	background: #fbfafa;
+	vertical-align: top;
+}
+
+.vm-shopPaymentComplete__orderArea__boardView__th {
+	border-bottom: 1px solid #e9e9e9;
+}
+
+.vm-shopPaymentComplete__orderArea__boardView__price {
+	padding: 6px 0 7px 10px;
+	border-top: 0;
+	color: #ff0000;
+	font-size: 17px;
+	width: auto;
+	vertical-align: top;
+	margin:0;
+}
+
+.vm-shopPaymentComplete__orderArea__boardView__method {
+	width: auto;
+	padding: 10px 0 10px 10px;
+	border-top: 1px solid #e9e9e9;
+	vertical-align: top;
+	margin: 0;
+}
+
+.vm-shopPaymentComplete__orderList {
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__orderList__div {
+	margin: 30px 0 10px 10px;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__orderList__div h3 {
+	font-size: 18px;
+	font-weight: bold;	
+}
+
+.vm-shopPaymentComplete__orderList table {
+	margin: 0;
+	position: relative;
+	color: #000;
+	line-height: 1.5;
+	border: 1px solid #000;
+	border-collapse: collapse;
+	width: 100%;
+	border-spacing: 0px;
+}
+
+.vm-shopPaymentComplete__orderList table th {
+	padding: 11px 0 9px;
+	font-weight: normal;
+	background: #fbfafa;
+	vertical-align: top;
+}
+
+.vm-shopPaymentComplete__orderList table {
+	text-align: center;
+	
+}
+
+.vm-shopPaymentComplete__orderList table tbody td {
+	padding: 8px 0 5px;
+	border-top: 1px solid #e9e9e9;
+	vertical-align: middle;
+	word-wrap: break-word;
+	margin: 0;
+	border-left: 0;
+	border-right: 0;
+	border-bottom: 0;
+}
+
+.vm-shopPaymentComplete__orderList table tbody img {
+	width: 80px
+}
+
+.vm-shopPaymentComplete__orderList table tbody strong {
+	color: #000;
+}
+
+.vm-shopPaymentComplete__table__img {
+	width: 100px;
+	border-right: 1px solid #e9e9e9;
+}
+
+.vm-shopPaymentComplete__table__info {
+	width: auto;
+	border-right: 1px solid #e9e9e9;
+}
+
+.vm-shopPaymentComplete__table__price {
+	width: 80px;
+	border-right: 1px solid #e9e9e9;
+}
+
+.vm-shopPaymentComplete__table__count {
+	width: 70px;
+	border-right: 1px solid #e9e9e9;
+}
+
+.vm-shopPaymentComplete__table__method {
+	width: 110px;
+	border-right: 1px solid #e9e9e9;
+}
+
+.vm-shopPaymentComplete__table__total {
+	width: 80px;
+}
+
+.vm-shopPaymentComplete__orderList tfoot td {
+	padding: 15px 10px 17px;
+	background: #fbfafa;
+	text-align: right;
+	border-top: 1px solid #e9e9e9;
+	vertical-align: middle;
+}
+
+.vm-shopPaymentComplete__orderList__strong {
+	float: left;
+	margin: 6px 0 0;
+	font-weight: normal;
+}
+
+.vm-shopPaymentComplete__orderList__strong__total {
+	color: #ff0000;
+}
+
+.vm-shopPaymentComplete__delivery {
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__delivery__title {
+	margin: 40px 0 10px;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__delivery__title h3 {
+	color: #000;
+	font-size: 14px;
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__delivery__title__boardView {
+	border: 1px solid #d7d5d5;
+	margin: 0;
+	padding: 0;
+}
+
+.vm-shopPaymentComplete__delivery__title__boardView table {
+	table-layout: fixed;
+	color: #353535;
+	line-height: 1.5;
+	width: 100%;
+	border: 0;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+.vm-shopPaymentComplete__delivery__title__boardView th {
+	width: 120px;
+	padding : 11px 0 10px 19px;
+	border-top: 1px solid #e9e9e9;
+	border-right: 1px solid #e9e9e9;
+	font-weight: normal;
+	text-align: left;
+	background: #fbfafa;
+	vertical-align: top;
+}
+
+.vm-shopPaymentComplete__delivery__title__boardView td {
+	width: auto;
+	padding: 9px 0 8px 10px;
+	border-top: 1px solid #e9e9e9;
+	vertical-align: top;
+	margin: 0;
+}
+
+.vm-shopPaymentComplete__shopMain {
+	background-color: #5b75e7;
+	color: #fff;
+	width: 150px;
+	height: 35px;
+	font-size: 18px;
+}
+
+.vm-shopPaymentComplete__mainBtn {
+	text-align: center;
+	margin-top: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,49 @@
+@charset "UTF-8";
+
+.vm-searchAll__section { margin-top: 40px; }
+.vm-searchAll__header {
+	padding: 0 0 2px 10px;
+	border-bottom: 3px solid #5e72e4;
+	font-size: 30px;
+}
+.vm-searchAll__header strong { color: #2196F3; }
+.vm-searchAll__result { margin-top: 40px; }
+.vm-searchAll__block:not(:first-child) { margin-top: 20px; padding-top: 30px; border-top: 1px solid #aaa; }
+.vm-searchAll__block__inner { padding: 0 10px;  }
+.vm-searchAll__board-type { display: flex; align-items: center; font-size: 20px; font-weight: 600; }
+.vm-searchAll__board-type__text { margin-left: 10px; }
+.vm-searchAll__list { margin-top: 20px; }
+.vm-searchAll__item {
+	display: block;
+	padding: 10px;
+	border-radius: 10px;
+	background-color: #fff;
+	transform: translateX(400px);
+	opacity: 0;
+	transition: 350ms;
+	transition-property: background-color, transform, opacity;
+}
+.vm-searchAll__item.on { transform: translateX(0); opacity: 1; }
+.vm-searchAll__item:not(:first-child) { margin-top: 10px; }
+.vm-searchAll__item:hover { background-color: #eee; }
+.vm-searchAll__item__head { justify-content: space-between; }
+.vm-searchAll__board-title { position: relative; width: calc(100% - 130px); padding-left: 20px; color: #555; line-height: 20px; font-weight: 600; }
+.vm-searchAll__board-title > * { vertical-align: top; }
+.vm-searchAll__board-title i { position: absolute; left: 0; top: 0; }
+.vm-searchAll__board-title__text { max-width: 100%; margin-left: 5px; }
+.vm-searchAll__board-date { min-width: 130px; color: #555; text-align: right; }
+.vm-searchAll__board-date__text { margin-left: 5px; line-height: 20px; }
+.vm-searchAll__item__body { margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; color: #0070c9; }
+.vm-searchAll__board-content {
+	overflow: hidden;
+	font-size: 14px;
+	line-height: 20px;
+	display: -webkit-box;
+	max-height: 60px;
+	text-overflow: ellipsis;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+}
+
+.vm-searchAll__no-data { padding: 0 5px; color: #777; font-size: 16px; }
+.vm-searchAll__no-data__text { margin-left: 10px; }

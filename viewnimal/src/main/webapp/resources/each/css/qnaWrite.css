@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+
+.vm-qnaWrite__table {
+	font-size: .9rem;
+	letter-spacing: -.08rem;
+}
+
+.vm-qnaWrite__table th {
+	background-color: #5b75e7;
+	color: #fff;
+	text-align: center;
+}
+
+
+.vm-qnaWrite__div {
+	height:150px;
+	border:1px solid lightGrey;
+	font-size: 1.2rem;
+	padding-top: 5%;
+}
+
+.vm-qnaWrite .custom-radio {
+	display: inline;
+	margin-right: 3rem;
+}
+
+

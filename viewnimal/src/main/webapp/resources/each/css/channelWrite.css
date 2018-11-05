@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+
+.vm-channelWrite__category { 
+	height: 45px; 
+	width: 200px; 
+	border-radius: 5px; 
+	padding: 5px;
+}
+.vm-channelWrite__title-input { border :1px solid #a9a9a9; }

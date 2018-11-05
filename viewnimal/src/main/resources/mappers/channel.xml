@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="channelMapper">
+
+	<!-- 리스트 -->
+	<select id="selectListChannel" parameterType="ChannelDto" resultType="ChannelDto">
+		SELECT * FROM ( SELECT ROWNUM RNUM, NO, TITLE, WRITE_DATE, READ_COUNT, THUMBNAIL, ID, ANIMAL_ID
+	                    FROM (SELECT * FROM T_CHANNEL WHERE ACTIVE = 'Y' 
+	                      	<if test="animal_id != null">
+								AND ANIMAL_ID = #{animal_id}
+							</if>
+	                     ORDER BY NO DESC) )
+	    WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+
+	</select>
+	
+	<!-- 다른 채널 선택 리스트 -->
+	<select id="selectChannelChoice" parameterType="AdoptionPetDto" resultType="AdoptionPetDto">
+	SELECT PET_ID, IMAGE, NAME, CONTENT FROM T_ADOPTION_PET WHERE CHANNEL_ACTIVE = 'Y'
+		<if test="pet_id != null">
+			AND PET_ID = #{pet_id}
+		</if>
+	</select>
+
+	<!-- 총 게시글 개수 -->
+	<select id="selectTotalChannel" resultType="_int">
+		SELECT COUNT(*) FROM T_CHANNEL WHERE ACTIVE = 'Y'
+		<if test="animal_id != null">
+			AND ANIMAL_ID = #{animal_id}
+		</if>
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="updateReadCount" parameterType="_int" flushCache="true">
+		UPDATE T_CHANNEL
+		SET READ_COUNT = READ_COUNT + 1
+		WHERE NO = #{no}
+	</update>
+	
+	<!-- 상세페이지 -->
+	<select id="selectDetailChannel" parameterType="_int" resultType="ChannelDto">
+		SELECT * FROM T_CHANNEL
+		WHERE NO = #{no}
+	</select>
+
+	<!-- 글작성 카테고리 -->
+	<select id="selectCategoryChannel" resultType="AdoptionPetDto">
+	SELECT NAME, PET_ID FROM T_ADOPTION_PET WHERE CHANNEL_ACTIVE = 'Y'
+	</select>
+
+	<!-- 글쓰기 -->
+	<insert id="insertChannel" parameterType="ChannelDto" flushCache="true">
+		INSERT INTO T_CHANNEL VALUES (T_CHANNEL_SEQ.NEXTVAL, #{title}, SYSDATE, #{content}, #{content_tag}, #{thumbnail}, 0, 'Y', #{animal_id}, #{id}) 
+	</insert>
+	
+	<!-- 글 수정 -->
+	<update id="updateChannel" parameterType="ChannelDto" flushCache="true">
+		UPDATE T_CHANNEL SET ANIMAL_ID = #{animal_id}, TITLE = #{title}, CONTENT = #{content}, CONTENT_TAG = #{content_tag}, THUMBNAIL = #{thumbnail} WHERE NO = #{no}
+	</update>
+	
+	<!-- 글삭제 -->
+	<update id="updateNonActiveChannel" parameterType="_int" flushCache="true">
+		UPDATE T_CHANNEL SET ACTIVE = 'N' WHERE NO = #{no}
+	</update>
+	
+	<!-- 댓글 읽기 -->
+	<select id="selectChannelReplyList" parameterType="HashMap" resultType="ChannelReplyDto">
+		SELECT * FROM ( SELECT ROWNUM RNUM, NO, ID, WRITE_DATE, CHANNEL_NO, REPLY_CONTENT, NICKNAME
+                          FROM (SELECT * FROM V_CHANNEL_REPLY WHERE CHANNEL_NO=#{channel_no} ORDER BY NO) )
+		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+	</select>
+
+	<!-- 총  댓글 개수 -->
+	<select id="selectTotalCountChannelReply" resultType="_int">
+		SELECT COUNT(*) FROM V_CHANNEL_REPLY WHERE CHANNEL_NO = #{channel_no}
+	</select>	
+	
+	<!-- 댓글 쓰기 -->
+	<insert id="insertChannelReply" parameterType="ChannelReplyDto" flushCache="true">
+		INSERT INTO T_CHANNEL_REPLY VALUES (T_CHANNEL_REPLY_SEQ.NEXTVAL, #{channel_no}, #{id}, SYSDATE, #{reply_content})
+	</insert>
+
+	<!-- 댓글 수정 -->
+	<update id="updateChannelReply" parameterType="ChannelReplyDto" flushCache="true">
+		UPDATE T_CHANNEL_REPLY SET REPLY_CONTENT = #{reply_content} WHERE NO = #{no}
+	</update>
+
+	<!-- 댓글 삭제 -->
+	<delete id="deleteChannelReply" parameterType="_int" flushCache="true">
+		DELETE T_CHANNEL_REPLY WHERE NO = #{no}
+	</delete>
+	
+
+</mapper>

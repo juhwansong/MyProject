@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="productMapper">
+	
+	<resultMap type="ProductDto" id="resultListProduct">
+		<result property="product_id" column="product_id" />
+		<result property="price" column="price" />
+		<result property="name" column="name" />
+		<result property="production" column="production" />
+		<result property="origin" column="origin" />
+		<result property="explain" column="explain" />
+		<result property="category" column="category" />
+		<result property="main_img_name" column="main_img_name" />
+		<result property="detail_img_name" column="detail_img_name" />
+		<result property="reg_date" column="reg_date" />
+		<result property="amount" column="amount" />
+	</resultMap>
+	
+	<select id="getListCount" parameterType="string" resultType="_int">
+		select count(*) from t_product
+		<choose>
+			<when test="_parameter != null">
+				where category like #{category} || '%'
+			</when>
+		</choose>
+	</select>
+
+	<select id="selectProductList" parameterType="hashmap" resultMap="resultListProduct">
+		select * from (select rownum rnum, PRODUCT_ID, PRICE, NAME, PRODUCTION, ORIGIN, 
+		EXPLAIN, CATEGORY, MAIN_IMG_NAME, DETAIL_IMG_NAME, REG_DATE from (select * from t_product
+		<choose>
+			<when test="category != null">
+				where category like #{category} || '%'
+			</when>
+		</choose>
+		
+		<choose>
+			<when test="productArrayList == 1">
+				order by REG_DATE desc
+			</when>
+			
+			<when test="productArrayList == 2">
+				order by name asc
+			</when>
+			
+			<when test="productArrayList == 3">
+				order by price asc
+			</when>
+			
+			<when test="productArrayList == 4">
+				order by price desc
+			</when>
+		</choose>
+		)) where rnum <![CDATA[>=]]> #{startRow} and rnum <![CDATA[<=]]> #{endRow}
+	</select>
+	
+	<select id="selectProductDetail" parameterType="string" resultMap="resultListProduct">
+		select * from t_product where PRODUCT_ID = #{productId}
+	</select>
+
+	<select id="selectBasketList" parameterType="string" resultMap="resultListProduct">
+		select PRODUCT_ID, PRICE, NAME, MAIN_IMG_NAME, AMOUNT from t_product join t_basket using (PRODUCT_ID) where id = #{id}
+	</select>
+	
+	<select id="allOrder" parameterType="hashmap" resultMap="resultListProduct">
+		select PRODUCT_ID, PRICE, NAME, MAIN_IMG_NAME, AMOUNT from t_product join t_basket using (PRODUCT_ID) where PRODUCT_ID in 
+		<foreach collection="list" item="l" index="index" separator="," open="(" close=")">
+			'${list[index]}'
+		</foreach>
+		and id = #{id}
+	</select>
+
+	<select id="selectComplete" parameterType="hashmap" resultMap="resultListProduct">
+		select * from t_product join t_order using (product_id) where product_id in
+		<foreach collection="list" item="l" index="index" separator="," open="(" close=")">
+			#{l.product_id}
+		</foreach>
+		and id = #{id} and order_no = (select max(order_no) from t_order)
+	</select>
+	
+	<select id="selectNow" parameterType="ProductDto" resultMap="resultListProduct">
+		select * from t_product where product_id = #{product_id}
+	</select>
+	
+</mapper>
